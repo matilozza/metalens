@@ -492,9 +492,17 @@ html, body { overflow-x: clip; }
   .nav__logo svg { width: 118px; }
   .nav__toggle { display: grid; place-items: center; width: 44px; height: 44px; margin-right: -10px; border: 0; background: transparent; cursor: pointer; }
   .nav__toggle:focus-visible { outline: 2px solid var(--sky); outline-offset: -4px; }
-  .nav__links { display: none; position: absolute; top: 44px; right: 0; min-width: 200px; padding: 20px; background: var(--ink); border: 1px solid var(--sky); flex-direction: column; align-items: stretch; gap: 16px; }
-  .nav.is-open .nav__links { display: flex; }
-  .nav__links a:not(.btn) { display: block; }
+  /* Menú abierto (Figma 582:160): pantalla completa en tinta, links grandes abajo a la izquierda, X arriba a la derecha */
+  .nav.is-open { z-index: 100; }
+  .nav__links { position: fixed; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; gap: calc(40 * var(--m)); padding: 0 16px calc(40 * var(--m)) calc(11 * var(--m)); background: var(--ink); opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s linear .35s; }
+  .nav.is-open .nav__links { opacity: 1; visibility: visible; transition: opacity .35s ease; }
+  .nav__links a, .nav__links a:not(.btn), .nav__links .btn { display: block; height: auto; padding: 0; background: none; color: var(--sky); font: 500 calc(70 * var(--m))/1 var(--display); letter-spacing: 0; text-transform: uppercase; text-align: left; text-box-trim: trim-both; text-box-edge: cap alphabetic; }
+  .nav__links .btn { color: var(--lime); }   /* el CTA se diferencia en lima */
+  .nav.is-open .nav__toggle { position: fixed; z-index: 2; top: calc(16 * var(--m)); right: calc(16 * var(--m)); width: calc(54 * var(--m)); height: calc(54 * var(--m)); margin: 0; }
+  .nav.is-open .nav__toggle img { display: none; }
+  .nav.is-open .nav__toggle::before, .nav.is-open .nav__toggle::after { content: ""; grid-area: 1 / 1; width: calc(38.2 * var(--m)); height: calc(3 * var(--m)); background: var(--sky); rotate: 45deg; }
+  .nav.is-open .nav__toggle::after { rotate: -45deg; }
+  .menu-open, .menu-open body { overflow: hidden; }
 
   /* Los cortes de desktop no deben acortar las líneas en pantallas chicas. */
   .step__head br, .pricing__title br,
@@ -550,12 +558,12 @@ html, body { overflow-x: clip; }
   .person__right > img { width: calc(32 * var(--m)); }
   .person__copy { font-size: calc(18 * var(--m)); line-height: 1.35; gap: 1.35em; }
 
-  /* 4 · Product: editor recortado a la izquierda, steps en filas de 64 */
+  /* 4 · Product: editor recortado a la izquierda, steps en filas de 82 */
   /* el escenario queda fijo a pantalla completa (los steps avanzan con el scroll): el editor se apoya
      sobre los steps con el mismo recorte que en Figma (391 visibles de 488) y el celeste llena arriba */
   .product__editor { left: calc(30 * var(--m)); top: auto; bottom: calc(-97 * var(--m)); --ew: calc(1162 * var(--m)); }
-  .ptab { margin-left: 0; margin-top: -1px; height: calc(64 * var(--m)); padding: 0 44px 0 16px; align-items: center; gap: calc(8 * var(--m)); }
-  .ptab__num, .ptab__txt { font-size: calc(18 * var(--m)); line-height: .98; }
+  .ptab { margin-left: 0; margin-top: -1px; height: calc(82 * var(--m)); padding: 0 44px 0 16px; align-items: center; gap: calc(8 * var(--m)); }
+  .ptab__num, .ptab__txt { font-size: calc(20 * var(--m)); line-height: .88; }
   .ptab__dot { right: 16px; width: calc(14 * var(--m)); height: calc(14 * var(--m)); margin-top: calc(-7 * var(--m)); }
 
   /* 5 · Migration */

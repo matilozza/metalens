@@ -35,6 +35,7 @@
   const nav = $('.nav'), menuToggle = $('.nav__toggle');
   function setMenuOpen(open) {
     nav.classList.toggle('is-open', open);
+    document.documentElement.classList.toggle('menu-open', open);   // sin scroll detrás del menú
     menuToggle.setAttribute('aria-expanded', String(open));
     menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
   }
