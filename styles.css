@@ -91,7 +91,8 @@ section, header, footer { position: relative; width: calc(1440 * var(--u)); marg
 .person__left .display-80 { margin-bottom: calc(-11 * var(--u)); }
 .person__right { background: var(--lime); }
 .person__right > img, .demo__note img { width: calc(40 * var(--u)); height: auto; }
-.col__aerolab img { width: calc(78 * var(--u)); height: auto; }
+.col__aerolab { display: inline-block; width: calc(78 * var(--u)); }
+.col__aerolab .al { display: block; width: calc(102 * 78 / 78.8 * var(--u)); height: auto; overflow: visible; }
 .person__copy { font: 400 calc(22 * var(--u))/1.1 var(--sans); color: var(--text); display: grid; gap: calc(24 * var(--u)); }
 
 /* ───────────── 4 · Product ───────────── */
@@ -659,3 +660,17 @@ section[tabindex="-1"]:focus, footer[tabindex="-1"]:focus { outline: none; }
   .nav__logo:hover .lg-l { transform: translateX(-1.6px); }
   .nav__logo:hover .lg-r { transform: translateX(1.6px); }
 }
+
+/* ═════════════ LOGO AEROLAB (footer) ═════════════
+   Reposo: solo el logotipo. Hover: el logotipo se corre a la derecha y el kite
+   sube desde abajo y aparece, sin escala ni rotación; mientras sigue el hover, flota apenas. */
+.al__type { transform: translateX(-22.7px); transition: transform .6s var(--ease) .05s; }
+.al__kite { transform-box: fill-box; transform-origin: 0% 30%; opacity: 0; transform: translateY(11px); transition: transform .35s cubic-bezier(.5, 0, .75, 0), opacity .2s ease .1s; }
+.al__sway { transform-box: fill-box; transform-origin: 0% 30%; animation: al-sway 2.4s ease-in-out infinite; }
+@keyframes al-sway { 0%, 100% { transform: translateY(.4px); } 50% { transform: translateY(-.8px); } }
+@media (hover: hover) {
+  .col__aerolab:hover .al__type, .col__aerolab:focus-visible .al__type { transform: none; transition-delay: 0s; }
+  .col__aerolab:hover .al__kite, .col__aerolab:focus-visible .al__kite { opacity: 1; transform: none; transition: transform .6s var(--ease) .1s, opacity .2s ease .1s; }
+}
+.reduce .al__type, .reduce .al__kite { transition: none; }
+.reduce .al__sway { animation: none; }
