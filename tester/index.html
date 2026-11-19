@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metalens · Tester responsive</title>
+  <link rel="stylesheet" href="tester.css" />
+  <script src="tester.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img src="../assets/logo.svg" alt="Metalens" width="141" height="16" /><span>Tester responsive</span></div>
+    <a class="site-link" href="../" target="_blank" rel="noopener">Abrir sitio</a>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <details id="presets-panel" open>
+        <summary>Resoluciones <span id="selection-count">3</span></summary>
+        <div class="preset-content">
+          <p class="sidebar-help">Elegí los tamaños que querés comparar.</p>
+          <div class="quick-sets" aria-label="Grupos de resoluciones">
+            <button type="button" data-set="main">Principales</button>
+            <button type="button" data-set="mobile">Mobile</button>
+            <button type="button" data-set="tablet">Tablet</button>
+            <button type="button" data-set="desktop">Desktop</button>
+            <button type="button" data-set="landscape">Horizontal</button>
+            <button type="button" data-set="breakpoints">Límites</button>
+            <button type="button" data-set="all">Todas (34)</button>
+          </div>
+          <div id="preset-list"></div>
+        </div>
+      </details>
+    </aside>
+
+    <main>
+      <div class="workspace-heading">
+        <div><p class="eyebrow">VISTA EN VIVO</p><h1>Una web. Todos los tamaños.</h1></div>
+        <div class="view-switch" aria-label="Modo de visualización">
+          <button type="button" id="compare-mode" aria-pressed="true">Comparar</button>
+          <button type="button" id="single-mode" aria-pressed="false">Individual</button>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <label class="section-field">Ir a sección
+          <select id="section-select">
+            <option value="hero">Hero</option><option value="intro">Introducción</option>
+            <option value="person">Personas</option><option value="product">Producto</option>
+            <option value="migration">Migración</option><option value="pricing">Pricing</option>
+            <option value="faq">FAQs</option><option value="demo">Demo y footer</option>
+          </select>
+        </label>
+        <label class="sync-control"><input type="checkbox" id="sync-scroll" checked /><span>Sincronizar scroll</span></label>
+        <button type="button" id="reload-previews" class="secondary">Recargar vistas</button>
+      </div>
+
+      <form id="size-controls" class="size-controls" hidden>
+        <label>Resolución<select id="device-select"></select></label>
+        <label>Ancho<input id="custom-width" type="number" min="200" max="3840" step="1" required value="390" /></label>
+        <span class="times" aria-hidden="true">×</span>
+        <label>Alto<input id="custom-height" type="number" min="200" max="3840" step="1" required value="844" /></label>
+        <button type="submit" class="primary">Aplicar</button>
+        <button type="button" id="rotate-size" class="secondary">Girar</button>
+        <label>Escala<select id="zoom-select"><option value="fit">Ajustar</option><option value="0.5">50%</option><option value="0.75">75%</option><option value="1">100%</option></select></label>
+        <button type="button" id="add-comparison" class="secondary">Sumar a comparación</button>
+      </form>
+
+      <div class="workspace-meta"><p id="view-description">3 vistas en comparación</p><p>Desplazate dentro de cada vista. <span id="scale-help">Ampliá una para verla en detalle.</span></p></div>
+      <div id="preview-grid" class="preview-grid"></div>
+      <div id="empty-state" class="empty-state" hidden><h2>Elegí una resolución para empezar</h2><p>Podés marcar varias o cargar las 34 de la revisión de QA.</p><button type="button" class="primary" data-set="main">Ver principales</button></div>
+      <p class="tester-note">Cada vista conserva su ancho y alto reales; la escala solo ajusta cómo la ves acá. Todas muestran tu versión local actual.</p>
+      <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
+    </main>
+  </div>
+</body>
+</html>

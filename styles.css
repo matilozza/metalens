@@ -240,15 +240,16 @@ section, header, footer { position: relative; width: calc(1440 * var(--u)); marg
 .field { height: calc(36 * var(--u)); display: flex; align-items: flex-start; gap: calc(16 * var(--u)); border-bottom: 1px solid var(--sky-2); }
 /* punto: siempre vacío, solo contorno */
 .field i { width: calc(14 * var(--u)); height: calc(14 * var(--u)); margin-top: calc(3 * var(--u)); border: 1px solid var(--wine); border-radius: 50%; flex: none; }
-.field input { flex: 1; border: 0; background: none; outline: none; color: var(--wine); font: 500 calc(16 * var(--u))/calc(20 * var(--u)) var(--sans); letter-spacing: .02em; text-transform: uppercase; }
+.field input { flex: 1; border: 0; background: none; outline: none; color: var(--wine); font: 500 max(16px, calc(16 * var(--u)))/max(20px, calc(20 * var(--u))) var(--sans); letter-spacing: .02em; text-transform: uppercase; }
 .field input::placeholder { color: var(--wine); opacity: 1; }
 .field input:focus::placeholder { color: transparent; }   /* al tocar el campo, la palabra se va */
+.field:focus-within { border-bottom-color: var(--wine); box-shadow: 0 1px 0 var(--wine); }
 /* "(optional)" fijo en su lugar: el input ocupa todo el ancho y la etiqueta queda encima, quieta.
    Si el campo tiene texto se oculta para no pisarlo. */
 .field--opt { position: relative; }
-.field--opt small { position: absolute; left: calc(112 * var(--u)); top: 0; pointer-events: none; }
+.field--opt small { position: absolute; left: calc(30 * var(--u) + max(82px, 82 * var(--u))); top: 0; pointer-events: none; }
 .field--opt:has(input:focus) small, .field--opt:has(input:not(:placeholder-shown)) small { visibility: hidden; }   /* se va junto con la palabra MESSAGE */
-.field small { font: 500 calc(12 * var(--u))/calc(20 * var(--u)) var(--sans); letter-spacing: .02em; text-transform: uppercase; }
+.field small { font: 500 max(12px, calc(12 * var(--u)))/max(20px, calc(20 * var(--u))) var(--sans); letter-spacing: .02em; text-transform: uppercase; }
 .form .btn--dark { position: absolute; right: var(--pad); bottom: var(--pad); }
 
 .demo__rule { margin-top: calc(100 * var(--u)); border: 0; border-top: 1px solid var(--wine-2); }
@@ -385,7 +386,7 @@ html, body { overflow-x: clip; }
   .person__copy { font-size: clamp(18px, 2.6vw, 22px); gap: 16px; }
 
   /* tipografías grandes */
-  .display-166 { font-size: clamp(56px, 13.2vw, 128px); line-height: .9; }
+  .display-166 { font-size: clamp(44px, calc((100vw - 2 * var(--pad)) / 8.5), 112px); line-height: 1; }
   .display-80  { font-size: clamp(40px, 8.4vw, 72px); line-height: 1.02; }
   .label-mako, .label-supreme { font-size: 14px; line-height: 1.15; }
 
@@ -404,6 +405,7 @@ html, body { overflow-x: clip; }
   /* 5 · Migration */
   .migration { padding: 72px var(--pad) 72px; }
   .migration .display-166 { margin-top: 0; }
+  .migration .kw { display: inline-block; white-space: nowrap; }
   .migration__lead { margin: 40px 0 0 auto; width: min(507px, 62%); font-size: 15px; line-height: 1.15; }
   .steps { margin: 56px calc(var(--pad) * -1) 0; width: auto; height: calc(var(--pin-h) + var(--track, 1300px)); --pin-h: 560px; --card-h: 400px; --dx: 48px; --dy: 80px; }
   .steps__pin { top: max(24px, calc(50svh - var(--pin-h) / 2)); height: var(--pin-h); }
@@ -426,9 +428,8 @@ html, body { overflow-x: clip; }
   .pricing__plans { width: auto; margin-inline: var(--pad); padding-block: 56px 72px; }
   .price-card__intro, .price-card--enterprise .price-card__intro { padding: 24px 20px; }
   .price-card__name { font-size: 16px; }
-  .price-card__price { font-size: clamp(40px, 5.5vw, 56px); }
-  .price-card--enterprise .price-card__price { font-size: calc(70 * var(--u)); }
-.price-card__description { margin-top: 28px; font-size: 20px; }
+  .price-card__price, .price-card--enterprise .price-card__price { font-size: clamp(40px, 5.5vw, 56px); }
+  .price-card__description { margin-top: 28px; font-size: 20px; }
   .price-card__body { padding: 24px 20px; gap: 40px; }
   .price-card__features { width: 100%; }
   .price-card__features li { font-size: 14px; }
@@ -449,7 +450,7 @@ html, body { overflow-x: clip; }
   /* 8 · Demo + footer */
   .demo { padding: 72px var(--pad) var(--pad); }
   .demo__top { grid-template-columns: 1fr; height: auto; gap: 48px; }
-  .demo__title { margin-top: 0; width: auto; font-size: clamp(64px, 15vw, 140px); line-height: .9; }
+  .demo__title { margin-top: 0; width: auto; font-size: clamp(56px, 9.6vw, 100px); line-height: 1.08; }
   .demo__note { position: static; margin-top: 32px; gap: 24px; }
   .demo__note img { width: 32px; flex: none; }
   .demo__note p { font-size: 15px; line-height: 1.25; }
@@ -463,11 +464,16 @@ html, body { overflow-x: clip; }
   .demo__logo { width: 100%; }
 }
 
+@media (min-width: 600px) and (max-width: 767px) {
+  .pricing__plans { grid-template-columns: 1fr; }
+  .price-card__price, .price-card--enterprise .price-card__price { font-size: 48px; }
+}
+
 /* ── Celular (< 600px) ── */
 @media (max-width: 599px) {
   /* ── Sistema mobile (Figma 582:121 y 594:487, diseño de 402 de ancho) ──
      Grilla: margen de 16, contenido a 370, bloques de color a sangre.
-     Tipografía: display 90 (hero) · 70 (títulos de sección) · 36 (títulos chicos) · lead 44 (intro)
+     Tipografía: display 90 (hero) · lead 44 (intro) · títulos fluidos ajustados en QA
                  texto 18/1.35 · labels 18 en mayúsculas · UI 18.
      --m = 1px del diseño de 402: todo escala con el ancho. */
   :root { --m: calc(100vw / 402); }
@@ -501,7 +507,6 @@ html, body { overflow-x: clip; }
   .faq__left .label-supreme br, .demo__note br { display: none; }
   .line > span { display: block; text-wrap: balance; }
   .pricing__title, .step__head h3 { text-wrap: balance; }
-  .migration .kw { display: inline-block; white-space: nowrap; }
   .person__copy, .migration__lead, .step__body, .pricing__lead,
   .price-card__description, .price-card__features li, .qa__q, .qa__a, .demo__note p { text-wrap: pretty; }
 
@@ -515,9 +520,13 @@ html, body { overflow-x: clip; }
   .step__num { flex: none; }
 
   .pricing__plans { grid-template-columns: 1fr; gap: 24px; padding-top: 40px; }
-  .price-card__price { font-size: clamp(40px, 11.5vw, 64px); }
-  .price-card--enterprise .price-card__price { font-size: calc(70 * var(--u)); }
-.price-card__description { font-size: 1.125rem; line-height: 1.35; }
+  .price-card__name { font-size: 1.21rem; }
+  /* Ambos precios comparten escala; el ancho útil reserva espacio para "CUSTOM PLAN". */
+  .price-card__price, .price-card--enterprise .price-card__price {
+    font-size: min(clamp(2.5rem, 11.5vw, 4rem), calc((100vw - 2 * var(--pad) - 40px) / 6.7));
+    white-space: nowrap;
+  }
+  .price-card__description { font-size: 1.125rem; line-height: 1.35; }
 
   .qa summary { gap: 10px; }
   .qa__num { width: 24px; }
@@ -532,8 +541,8 @@ html, body { overflow-x: clip; }
   .cols { flex-direction: column; gap: 24px; }
 
   /* títulos */
-  .display-166, .demo__title { font-size: calc(70 * var(--m)); line-height: .983; }
-  .display-80, .pricing__title { font-size: calc(36 * var(--m)); line-height: .99; }
+  .display-166, .display-80, .pricing__title { font-size: clamp(2.1175rem, 9.922vw, 3.3275rem); line-height: 1.08; }
+  .demo__title { font-size: clamp(2.7225rem, 11.616vw, 4.235rem); line-height: 1.08; }
   .label-mako { font-size: calc(18 * var(--m)); line-height: .895; letter-spacing: .3px; }
   .label-supreme, .migration__lead, .pricing__lead, .form__title { font: 500 calc(18 * var(--m))/1.2 var(--sans); letter-spacing: .3px; text-transform: uppercase; }
 
@@ -565,12 +574,21 @@ html, body { overflow-x: clip; }
   .step { width: calc(332 * var(--m)); padding: calc(21 * var(--m)) calc(15 * var(--m)) calc(67 * var(--m)); }
   .step__head { gap: calc(21 * var(--m)); }
   .step__num { flex: none; font-size: calc(64 * var(--m)); line-height: .7; }
-  .step__head h3 { flex: 1; min-width: 0; font-size: calc(30 * var(--m)); line-height: .8; padding-top: 0; }
+  .step__head h3 { flex: 1; min-width: 0; font-size: clamp(1.66375rem, 6.776vw, 1.96625rem); line-height: 1.1; padding-top: 0; }
   .step__plus { width: calc(26 * var(--m)); height: calc(30 * var(--m)); margin: auto 0 calc(28 * var(--m)) calc(92 * var(--m)); }
   .step__body { width: calc(167 * var(--m)); margin-left: calc(118 * var(--m)); font-size: calc(20 * var(--m)); line-height: 1; }
 
   /* 6 · Pricing */
   .pricing__lead { width: auto; margin: 32px 0 0; }
+}
+
+/* Si la pila no entra en el alto disponible, cada tarjeta sigue el flujo de la página. */
+@media (max-width: 599px) and (max-height: calc(100vw * 653 / 402 + 48px)),
+       (min-width: 600px) and (max-width: 1023px) and (max-height: 607px) {
+  .steps, .reduce .steps, html:not(.js) .steps { height: auto; margin: 40px 0 0; }
+  .steps__pin { position: static; height: auto; display: grid; gap: 20px; }
+  .steps .step { position: relative; left: auto; top: auto; width: 100%; height: auto; min-height: 280px; }
+  .js:not(.reduce) .steps .step { transform: none; transition: none; }
 }
 
 

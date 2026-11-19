@@ -145,7 +145,7 @@
       const r = steps.getBoundingClientRect();
       const pinTop = parseFloat(getComputedStyle(pin).top);
       const track = r.height - pin.offsetHeight;    // recorrido de scroll disponible
-      const p = (pinTop - r.top) / track;           // 0 → 1 mientras está fija (negativo antes)
+      const p = track > 1 ? (pinTop - r.top) / track : 1; // sin pista: las tarjetas quedan en el flujo
       // disparadores: al pasar cada umbral la card entra sola y completa (CSS); al volver a subir, sale
       const triggers = [-0.3, 0.2, 0.55];             // 01 al llegar, 02 y 03 mientras la zona está fija
       cards.forEach((c, i) => c.classList.toggle('is-in', p > triggers[i]));
@@ -166,6 +166,7 @@
       t.classList.remove('is-new');
       if (on && !was) { void t.offsetWidth; t.classList.add('is-new'); }   // el que recién se pinta: su texto sube
       t.setAttribute('aria-selected', i === n);
+      t.tabIndex = i === n ? 0 : -1;
     });
   }
   function productProgress() {
@@ -174,8 +175,12 @@
     return (pinTop - r.top) / (r.height - productPin.offsetHeight);       // 0 → 1 mientras está fijo
   }
   // mientras la página se desplaza sola después de un clic, manda el clic: el scroll no repinta los steps
-  let clickLock = false, lockTimer = 0;
-  function unlock() { clickLock = false; clearTimeout(lockTimer); }
+  let clickLock = false, lockTimer = 0, clickTarget = null;
+  function unlock() { clickLock = false; clickTarget = null; clearTimeout(lockTimer); }
+  addEventListener('scrollend', () => {
+    if (clickLock && Math.abs(scrollY - clickTarget) < 2) unlock();
+  });
+  ['wheel', 'touchstart'].forEach(event => addEventListener(event, unlock, { passive: true }));
   function stepFromScroll() {
     if (clickLock) return;
     if (product.offsetHeight <= productPin.offsetHeight + 1) return;          // sin pista (menos movimiento): manda el clic
@@ -191,11 +196,22 @@
     const target = scrollY + r.top - pinTop + track * (i * 0.33 + 0.16);
     if (track > 1) {
       clickLock = true;
+      clickTarget = target;
       clearTimeout(lockTimer);
-      addEventListener('scrollend', unlock, { once: true });
-      lockTimer = setTimeout(unlock, 1500);          // por si el navegador no avisa el fin del scroll
+      lockTimer = setTimeout(() => { unlock(); stepFromScroll(); }, 1500);
       scrollTo({ top: target, behavior: reduce ? 'auto' : 'smooth' });
     }
+  }));
+  ptabs.forEach((tab, index) => tab.addEventListener('keydown', event => {
+    let next;
+    if (event.key === 'ArrowRight' || (mobileTitles.matches && event.key === 'ArrowDown')) next = (index + 1) % ptabs.length;
+    else if (event.key === 'ArrowLeft' || (mobileTitles.matches && event.key === 'ArrowUp')) next = (index + ptabs.length - 1) % ptabs.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = ptabs.length - 1;
+    else return;
+    event.preventDefault();
+    ptabs[next].focus({ preventScroll: true });
+    ptabs[next].click();
   }));
 
 
@@ -241,15 +257,27 @@
   /* ── 5. FAQ: abrir/cerrar con altura suave, uno por vez ── */
   const items = $$('.qa');
   const DUR = reduce ? 0 : 420, EASE = 'cubic-bezier(.2,.7,.1,1)';
+  const faqAnimations = new WeakMap();
 
   function animateHeight(d, open) {
     const from = d.offsetHeight;
+    const previous = faqAnimations.get(d);
+    if (previous) {
+      previous.onfinish = null;
+      previous.cancel();
+    }
     if (open) d.open = true;
     d.classList.toggle('is-open', open);
     const to = open ? d.offsetHeight : closedHeight(d);
     const a = d.animate([{ height: from + 'px' }, { height: to + 'px' }], { duration: DUR, easing: EASE });
+    faqAnimations.set(d, a);
     d.style.overflow = 'hidden';
-    a.onfinish = () => { if (!open) d.open = false; d.style.overflow = ''; };
+    a.onfinish = () => {
+      if (faqAnimations.get(d) !== a) return;
+      if (!open) d.open = false;
+      d.style.overflow = '';
+      faqAnimations.delete(d);
+    };
   }
   function closedHeight(d) {
     const was = d.open, cls = d.classList.contains('is-open');

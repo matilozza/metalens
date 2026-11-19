@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mako&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=4" />
   <script>
     /* unidad de escala: 1u = 1px del diseño 1440. Desktop crece con el ancho (siempre ocupa todo el ancho).
        Debajo de 1024 el layout compacto usa px reales (u = 1px). */
@@ -103,7 +103,7 @@
       <div class="product__stage">
         <img class="product__editor" src="assets/editor@2x.png" alt="Metalens editor" width="1306" height="713" />
       </div>
-      <div class="product__tabs" role="tablist">
+      <div class="product__tabs" role="tablist" aria-label="Product features">
         <button class="ptab ptab--lime is-on" role="tab" data-step="0">
           <span class="ptab__num">01</span>
           <span class="ptab__txt">Move Forward. <br />Stay In Control.</span>
@@ -233,10 +233,10 @@
       </div>
       <form class="form" onsubmit="event.preventDefault()">
         <p class="form__title">Every site starts with a conversation.</p>
-        <label class="field"><i></i><input type="text" name="name" placeholder="Name" /></label>
-        <label class="field"><i></i><input type="email" name="email" placeholder="Work email" /></label>
-        <label class="field"><i></i><input type="url" name="website" placeholder="Company website" /></label>
-        <label class="field field--opt"><i></i><input type="text" name="message" placeholder="Message" /><small>(optional)</small></label>
+        <label class="field"><i></i><input type="text" name="name" placeholder="Name" aria-label="Name" autocomplete="name" /></label>
+        <label class="field"><i></i><input type="email" name="email" placeholder="Work email" aria-label="Work email" autocomplete="email" /></label>
+        <label class="field"><i></i><input type="url" name="website" placeholder="Company website" aria-label="Company website" autocomplete="url" /></label>
+        <label class="field field--opt"><i></i><input type="text" name="message" placeholder="Message" aria-label="Message (optional)" /><small>(optional)</small></label>
         <button type="submit" class="btn btn--dark">Get in touch</button>
       </form>
     </div>
@@ -275,6 +275,6 @@
   </footer>
 
 
-  <script src="animations.js?v=3"></script>
+  <script src="animations.js?v=4"></script>
 </body>
 </html>
