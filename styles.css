@@ -521,7 +521,9 @@ html, body { overflow-x: clip; }
   .nav__links a, .nav__links a:not(.btn), .nav__links .btn { display: block; height: auto; padding: 0; overflow: hidden; background: none; color: var(--ink); font: 500 calc(70 * var(--m))/1 var(--display); letter-spacing: 0; text-transform: uppercase; text-align: left; text-box-trim: trim-both; text-box-edge: cap alphabetic; }
   /* cada renglón (.mline, lo arma el JS) es una máscara; --l numera los renglones de todo el menú */
   .nav__links .mline { display: block; clip-path: inset(0 -24px); }
-  .nav__links .mline > span { display: block; transform: translateY(110%); transition: transform .35s cubic-bezier(.5, 0, .75, 0); }
+  .nav__links .mline > span { display: block; transform: translateY(110%); transition: none; }
+  /* al cerrar, los renglones salen hacia arriba (de a uno, rápido) y después vuelven abajo sin verse */
+  .nav.is-closing .nav__links .mline > span { transform: translateY(-110%); transition: transform .35s cubic-bezier(.5, 0, .75, 0); transition-delay: calc(var(--l) * 20ms); }
   .nav.is-open .nav__links .mline > span { transform: none; transition: transform .8s var(--ease); transition-delay: calc(.28s + var(--l) * 60ms); }
   .reduce .nav__links, .reduce .nav__links .mline > span, .reduce .nav__bars i, .reduce .nav__toggle { transition: none !important; }
   .menu-open, .menu-open body { overflow: hidden; }
