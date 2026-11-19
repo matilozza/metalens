@@ -32,6 +32,15 @@
   $$('.hero__title > span').forEach((el, i) => {
     el.innerHTML = `<span class="rise" style="--i:${i}">${el.innerHTML}</span>`;
   });
+  /* en mobile la última parte del título son tres renglones: cada uno con su propia máscara */
+  const line2 = $('.hero__line2'), line2Html = line2.innerHTML;
+  function splitHeroLines() {
+    if (!mobileTitles.matches) { line2.innerHTML = line2Html; return; }
+    const words = line2.textContent.trim().split(/\s+/);
+    line2.innerHTML = words.map((w, k) => `<span class="hl"><span class="rise" style="--i:${2 + k}">${w}</span></span>`).join('');
+  }
+  splitHeroLines();
+  mobileTitles.addEventListener('change', splitHeroLines);
   const nav = $('.nav'), menuToggle = $('.nav__toggle');
   function setMenuOpen(open) {
     if (open) {   // la X queda exactamente donde estaba la hamburguesa, aunque la página esté un poco scrolleada
@@ -76,6 +85,30 @@
     if (!t || el.children.length) return;
     el.innerHTML = `<span class="roll" data-t="${t}"><span>${t}</span></span>`;
   });
+
+  /* Menú mobile: cada renglón de cada link va en su propia máscara, así sube por separado.
+     Se mide dónde corta cada palabra y se arman los renglones; en desktop vuelve a la estructura del hover. */
+  const menuLinks = $$('.nav__links a');
+  menuLinks.forEach(a => (a.dataset.label = a.textContent.trim()));
+  function splitMenuLines() {
+    let n = 0;
+    menuLinks.forEach(a => {
+      const t = a.dataset.label;
+      if (!mobileTitles.matches) { a.innerHTML = `<span class="roll" data-t="${t}"><span>${t}</span></span>`; return; }
+      a.innerHTML = t.split(' ').map(w => `<span class="mw">${w}</span>`).join(' ');
+      const lines = [];
+      a.querySelectorAll('.mw').forEach(w => {
+        const last = lines[lines.length - 1];
+        if (last && Math.abs(last.top - w.offsetTop) < 2) last.words.push(w.textContent);
+        else lines.push({ top: w.offsetTop, words: [w.textContent] });
+      });
+      a.innerHTML = lines.map(l => `<span class="mline"><span style="--l:${n++}">${l.words.join(' ')}</span></span>`).join('');
+    });
+  }
+  document.fonts.ready.then(splitMenuLines);
+  mobileTitles.addEventListener('change', splitMenuLines);
+  let splitTimer;
+  addEventListener('resize', () => { clearTimeout(splitTimer); splitTimer = setTimeout(splitMenuLines, 150); });
 
   /* ── 2. Intro: palabras que se encienden con el scroll ── */
   const intro = $('.intro__text');

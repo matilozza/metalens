@@ -224,7 +224,10 @@ section, header, footer { position: relative; width: calc(1440 * var(--u)); marg
 .qa__num, .qa__q { text-box-trim: trim-both; text-box-edge: cap alphabetic; }
 .qa__plus { position: relative; width: calc(18 * var(--u)); height: calc(18 * var(--u)); flex: none; }
 /* cruz del sistema (Figma), en bordó: la lima casi no se veía sobre el crema */
-.qa__plus { background: var(--ink); -webkit-mask: url("assets/faq-plus.svg") center / contain no-repeat; mask: url("assets/faq-plus.svg") center / contain no-repeat; }
+/* + / − genéricos (no la cruz del logo): dos barras; al abrir, la vertical se pliega y queda el − */
+.qa__plus::before, .qa__plus::after { content: ""; position: absolute; inset: 0; margin: auto; width: 100%; height: calc(2 * var(--u)); background: var(--ink); }
+.qa__plus::after { rotate: 90deg; transition: scale .45s var(--ease); }
+.qa.is-open .qa__plus::after, html:not(.js) .qa[open] .qa__plus::after { scale: 0 1; }
 .qa__a { padding: calc(26 * var(--u)) 0 0 calc(60 * var(--u)); max-width: calc(783 * var(--u)); font: 400 calc(22 * var(--u))/1.1 var(--sans); color: var(--text); }
 
 /* ───────────── 8 · Demo + footer ───────────── */
@@ -474,30 +477,35 @@ html, body { overflow-x: clip; }
 
   /* Mobile (Figma 582:121, 402 de ancho): una palabra por línea, a la izquierda: MAKE / (EVERY) / VISIT / MEAN / MORE.
      --m = 1px del diseño de 402. */
-  .hero { min-height: min(100svh, calc(819 * var(--m))); padding: 120px 16px calc(19.5 * var(--m)); display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto auto; }
-  .hero__sparkle { grid-area: 2 / 1; align-self: start; width: calc(17.1 * var(--m)); margin: 0 0 0 calc(63 * var(--m)); }
-  .hero__kicker { grid-area: 2 / 1; margin: calc(18 * var(--m)) 0 calc(111.5 * var(--m)) calc(86 * var(--m)); font-family: var(--sans); font-size: calc(18 * var(--m)); line-height: 1.1; }
+  /* el hero ocupa la pantalla: el kicker queda arriba, el título apoyado abajo y el aire entre los dos varía con el alto */
+  /* --base: distancia de la línea base del último renglón al borde inferior; la comparten el hero y el menú */
+  :root { --base: calc(40 * var(--m)); }
+  .hero { min-height: 100svh; padding: min(calc(192 * var(--m)), 23.5svh) 16px calc(var(--base) - 8.5 * var(--m));   /* 8.5 = de la base al pie del renglón (90/86) */ display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto; }
+  .hero__sparkle { grid-area: 1 / 1; align-self: start; width: calc(17.1 * var(--m)); margin: 0 0 0 calc(63 * var(--m)); }
+  .hero__kicker { grid-area: 1 / 1; margin: calc(18 * var(--m)) 0 calc(48 * var(--m)) calc(86 * var(--m)); font-family: var(--sans); font-size: calc(18 * var(--m)); line-height: 1.1; }
   .hero__title { grid-area: 3 / 1; position: relative; display: block; margin-left: -.0556em; font-size: calc(90 * var(--m)); line-height: .9556; }
   .hero__title > span { display: block; line-height: inherit; text-align: left; }
   .hero__make { margin: 0; }
   .hero__title > .hero__every { position: static; width: auto; margin: .0402em 0 0 .2611em; }
   .hero__title > .hero__line2 { width: auto; margin: .058em 0 0; white-space: nowrap; }
+  .hero__line2 .hl { display: block; overflow: hidden; }   /* VISIT / MEAN / MORE: una máscara por renglón */
   .hero__line2 .rise { display: block; }
   .hero__mobile-break { display: initial; }
   .hero__br { position: absolute; top: .9893em; width: .28em; height: 1.0289em; }
   .hero__br--l { left: .08em; }
   .hero__br--r { left: 3.1867em; }
 
-  .nav { top: 12px; left: 16px; right: 16px; height: 24px; z-index: 2; }
-  .nav__logo svg { width: 118px; }
+  /* --hd: tamaño de logo y hamburguesa respecto del Figma (1 = logo de 181, líneas de 29) */
+  .nav { --hd: .8; top: calc(12 * var(--m)); left: 16px; right: 16px; height: calc(39 * var(--m)); z-index: 2; }
+  .nav__logo svg { width: calc(181 * var(--m) * .9); }   /* logo al 90 % del Figma (163 a 402) */
   /* Hamburguesa → X: el mismo botón y las mismas tres líneas; al abrir, la de arriba y la de abajo se cruzan.
      Abierto, el botón pasa a fixed en el mismo lugar de pantalla (JS deja --tg-top/--tg-right). */
-  .nav__toggle { position: relative; z-index: 2; display: grid; place-items: center; width: 44px; height: 44px; margin-right: -10px; padding: 0; border: 0; background: transparent; color: var(--sky); cursor: pointer; transition: color .4s ease .15s; }
+  .nav__toggle { position: relative; z-index: 2; display: grid; place-items: center; width: calc(39 * var(--m)); height: calc(39 * var(--m)); margin: 0; padding: 0; border: 0; background: transparent; color: var(--sky); cursor: pointer; transition: color .4s ease .15s; }
   .nav__toggle:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
   .nav__bars { display: grid; place-items: center; }
-  .nav__bars i { grid-area: 1 / 1; width: 18px; height: 2px; border-radius: 1px; background: currentColor; transition: transform .55s var(--ease), opacity .25s ease; }
-  .nav__bars i:nth-child(1) { transform: translateY(-6px); }
-  .nav__bars i:nth-child(3) { transform: translateY(6px); }
+  .nav__bars i { grid-area: 1 / 1; width: calc(32.5 * var(--m) * var(--hd)); height: calc(3.25 * var(--m) * var(--hd)); border-radius: 9px; background: currentColor; transition: transform .55s var(--ease), opacity .25s ease; }
+  .nav__bars i:nth-child(1) { transform: translateY(calc(-9.75 * var(--m) * var(--hd))); }
+  .nav__bars i:nth-child(3) { transform: translateY(calc(9.75 * var(--m) * var(--hd))); }
   .nav.is-open .nav__toggle { position: fixed; top: var(--tg-top, 2px); right: var(--tg-right, 6px); margin: 0; color: var(--ink); transition-delay: 0s; }
   .nav.is-open .nav__bars i:nth-child(1) { transform: rotate(45deg) scaleX(1.414); transition-delay: .1s; }
   .nav.is-open .nav__bars i:nth-child(2) { opacity: 0; transform: scaleX(0); }
@@ -508,18 +516,14 @@ html, body { overflow-x: clip; }
      Cierra: los links bajan juntos y rápido, después la cortina sube. */
   .nav.is-open { z-index: 100; }
   /* :root sube la especificidad para ganarle a la entrada general (.js:not(.reduce) .nav__links) */
-  :root .nav .nav__links { position: fixed; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; gap: calc(40 * var(--m)); padding: 0 16px calc(40 * var(--m)) calc(11 * var(--m)); background: var(--sky); visibility: hidden; clip-path: inset(0 0 100% 0); transition: clip-path .55s var(--ease) .22s, visibility 0s linear .8s; }
+  :root .nav .nav__links { position: fixed; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; gap: calc(40 * var(--m)); padding: 0 16px var(--base) calc(11 * var(--m)); background: var(--sky); visibility: hidden; clip-path: inset(0 0 100% 0); transition: clip-path .55s var(--ease) .22s, visibility 0s linear .8s; }
   .nav.is-open .nav__links { visibility: visible; clip-path: inset(0); transition: clip-path .65s var(--ease); }
   .nav__links a, .nav__links a:not(.btn), .nav__links .btn { display: block; height: auto; padding: 0; overflow: hidden; background: none; color: var(--ink); font: 500 calc(70 * var(--m))/1 var(--display); letter-spacing: 0; text-transform: uppercase; text-align: left; text-box-trim: trim-both; text-box-edge: cap alphabetic; }
-  .nav__links .roll { display: block; transform: translateY(110%); transition: transform .35s cubic-bezier(.5, 0, .75, 0); }
-  .nav__links .roll::after { content: none; }
-  .nav__links .roll > span { transform: none !important; }
-  .nav.is-open .nav__links .roll { transform: none; transition: transform .8s var(--ease); transition-delay: calc(.28s + var(--i) * 70ms); }
-  .nav__links a:nth-child(1) { --i: 0; }
-  .nav__links a:nth-child(2) { --i: 1; }
-  .nav__links a:nth-child(3) { --i: 2; }
-  .nav__links a:nth-child(4) { --i: 3; }
-  .reduce .nav__links, .reduce .nav__links .roll, .reduce .nav__bars i, .reduce .nav__toggle { transition: none !important; }
+  /* cada renglón (.mline, lo arma el JS) es una máscara; --l numera los renglones de todo el menú */
+  .nav__links .mline { display: block; clip-path: inset(0 -24px); }
+  .nav__links .mline > span { display: block; transform: translateY(110%); transition: transform .35s cubic-bezier(.5, 0, .75, 0); }
+  .nav.is-open .nav__links .mline > span { transform: none; transition: transform .8s var(--ease); transition-delay: calc(.28s + var(--l) * 60ms); }
+  .reduce .nav__links, .reduce .nav__links .mline > span, .reduce .nav__bars i, .reduce .nav__toggle { transition: none !important; }
   .menu-open, .menu-open body { overflow: hidden; }
 
   /* Los cortes de desktop no deben acortar las líneas en pantallas chicas. */
