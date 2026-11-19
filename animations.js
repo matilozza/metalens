@@ -34,6 +34,11 @@
   });
   const nav = $('.nav'), menuToggle = $('.nav__toggle');
   function setMenuOpen(open) {
+    if (open) {   // la X queda exactamente donde estaba la hamburguesa, aunque la página esté un poco scrolleada
+      const r = menuToggle.getBoundingClientRect();
+      nav.style.setProperty('--tg-top', r.top + 'px');
+      nav.style.setProperty('--tg-right', (document.documentElement.clientWidth - r.right) + 'px');
+    }
     nav.classList.toggle('is-open', open);
     document.documentElement.classList.toggle('menu-open', open);   // sin scroll detrás del menú
     menuToggle.setAttribute('aria-expanded', String(open));

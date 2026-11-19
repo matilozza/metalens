@@ -490,18 +490,36 @@ html, body { overflow-x: clip; }
 
   .nav { top: 12px; left: 16px; right: 16px; height: 24px; z-index: 2; }
   .nav__logo svg { width: 118px; }
-  .nav__toggle { display: grid; place-items: center; width: 44px; height: 44px; margin-right: -10px; border: 0; background: transparent; cursor: pointer; }
-  .nav__toggle:focus-visible { outline: 2px solid var(--sky); outline-offset: -4px; }
-  /* Menú abierto (Figma 582:160): pantalla completa en tinta, links grandes abajo a la izquierda, X arriba a la derecha */
+  /* Hamburguesa → X: el mismo botón y las mismas tres líneas; al abrir, la de arriba y la de abajo se cruzan.
+     Abierto, el botón pasa a fixed en el mismo lugar de pantalla (JS deja --tg-top/--tg-right). */
+  .nav__toggle { position: relative; z-index: 2; display: grid; place-items: center; width: 44px; height: 44px; margin-right: -10px; padding: 0; border: 0; background: transparent; color: var(--sky); cursor: pointer; transition: color .4s ease .15s; }
+  .nav__toggle:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
+  .nav__bars { display: grid; place-items: center; }
+  .nav__bars i { grid-area: 1 / 1; width: 18px; height: 2px; border-radius: 1px; background: currentColor; transition: transform .55s var(--ease), opacity .25s ease; }
+  .nav__bars i:nth-child(1) { transform: translateY(-6px); }
+  .nav__bars i:nth-child(3) { transform: translateY(6px); }
+  .nav.is-open .nav__toggle { position: fixed; top: var(--tg-top, 2px); right: var(--tg-right, 6px); margin: 0; color: var(--ink); transition-delay: 0s; }
+  .nav.is-open .nav__bars i:nth-child(1) { transform: rotate(45deg) scaleX(1.414); transition-delay: .1s; }
+  .nav.is-open .nav__bars i:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .nav.is-open .nav__bars i:nth-child(3) { transform: rotate(-45deg) scaleX(1.414); transition-delay: .1s; }
+
+  /* Menú abierto: pantalla completa celeste, links en tinta abajo a la izquierda.
+     Abre: el fondo baja como una cortina y los links suben uno por uno desde su máscara.
+     Cierra: los links bajan juntos y rápido, después la cortina sube. */
   .nav.is-open { z-index: 100; }
-  .nav__links { position: fixed; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; gap: calc(40 * var(--m)); padding: 0 16px calc(40 * var(--m)) calc(11 * var(--m)); background: var(--ink); opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s linear .35s; }
-  .nav.is-open .nav__links { opacity: 1; visibility: visible; transition: opacity .35s ease; }
-  .nav__links a, .nav__links a:not(.btn), .nav__links .btn { display: block; height: auto; padding: 0; background: none; color: var(--sky); font: 500 calc(70 * var(--m))/1 var(--display); letter-spacing: 0; text-transform: uppercase; text-align: left; text-box-trim: trim-both; text-box-edge: cap alphabetic; }
-  .nav__links .btn { color: var(--lime); }   /* el CTA se diferencia en lima */
-  .nav.is-open .nav__toggle { position: fixed; z-index: 2; top: calc(16 * var(--m)); right: calc(16 * var(--m)); width: calc(54 * var(--m)); height: calc(54 * var(--m)); margin: 0; }
-  .nav.is-open .nav__toggle img { display: none; }
-  .nav.is-open .nav__toggle::before, .nav.is-open .nav__toggle::after { content: ""; grid-area: 1 / 1; width: calc(38.2 * var(--m)); height: calc(3 * var(--m)); background: var(--sky); rotate: 45deg; }
-  .nav.is-open .nav__toggle::after { rotate: -45deg; }
+  /* :root sube la especificidad para ganarle a la entrada general (.js:not(.reduce) .nav__links) */
+  :root .nav .nav__links { position: fixed; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; gap: calc(40 * var(--m)); padding: 0 16px calc(40 * var(--m)) calc(11 * var(--m)); background: var(--sky); visibility: hidden; clip-path: inset(0 0 100% 0); transition: clip-path .55s var(--ease) .22s, visibility 0s linear .8s; }
+  .nav.is-open .nav__links { visibility: visible; clip-path: inset(0); transition: clip-path .65s var(--ease); }
+  .nav__links a, .nav__links a:not(.btn), .nav__links .btn { display: block; height: auto; padding: 0; overflow: hidden; background: none; color: var(--ink); font: 500 calc(70 * var(--m))/1 var(--display); letter-spacing: 0; text-transform: uppercase; text-align: left; text-box-trim: trim-both; text-box-edge: cap alphabetic; }
+  .nav__links .roll { display: block; transform: translateY(110%); transition: transform .35s cubic-bezier(.5, 0, .75, 0); }
+  .nav__links .roll::after { content: none; }
+  .nav__links .roll > span { transform: none !important; }
+  .nav.is-open .nav__links .roll { transform: none; transition: transform .8s var(--ease); transition-delay: calc(.28s + var(--i) * 70ms); }
+  .nav__links a:nth-child(1) { --i: 0; }
+  .nav__links a:nth-child(2) { --i: 1; }
+  .nav__links a:nth-child(3) { --i: 2; }
+  .nav__links a:nth-child(4) { --i: 3; }
+  .reduce .nav__links, .reduce .nav__links .roll, .reduce .nav__bars i, .reduce .nav__toggle { transition: none !important; }
   .menu-open, .menu-open body { overflow: hidden; }
 
   /* Los cortes de desktop no deben acortar las líneas en pantallas chicas. */
