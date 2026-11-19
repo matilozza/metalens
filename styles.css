@@ -208,6 +208,7 @@ section, header, footer { position: relative; width: calc(1440 * var(--u)); marg
 }
 .price-card__cta { width: 100%; height: calc(56 * var(--u)); border-radius: calc(4 * var(--u)); margin-top: auto; }
 .price-card__cta:focus-visible { outline: 2px solid var(--wine); outline-offset: 4px; }
+.price-card--enterprise .price-card__cta { --roll-c: var(--lime); }   /* en la card verde, el texto del hover toma el verde de la card */
 
 /* ───────────── 7 · FAQ ───────────── */
 .faq { min-height: calc(615 * var(--u)); padding: calc(100 * var(--u)) var(--pad); display: grid; grid-template-columns: calc(559 * var(--u)) calc(801 * var(--u)); gap: calc(32 * var(--u)); background: var(--paper); }
