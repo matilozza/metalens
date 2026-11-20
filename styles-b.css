@@ -431,11 +431,11 @@ section, header, footer { position: relative; width: calc(1440 * var(--u)); marg
 /* ───────────── Fondos a sangre ─────────────
    El contenido queda en 1440 centrado; los fondos se estiran hasta el borde de la ventana. */
 html, body { overflow-x: clip; }
-.hero, .intro { --bleed: var(--ink); }
+.hero, .intro, .live { --bleed: var(--ink); }
 .demo { --bleed: var(--ink); }
 .product__stage { --bleed: var(--sky); }
 /* border-image con outset: un solo relleno que cubre el bloque y los costados, sin costuras */
-.hero, .intro, .demo, .product__stage { border-image: conic-gradient(var(--bleed) 0 0) fill 0 / / 0 100vmax; }
+.hero, .intro, .live, .demo, .product__stage { border-image: conic-gradient(var(--bleed) 0 0) fill 0 / / 0 100vmax; }
 /* person: el lima sigue hacia la derecha */
 .person__right { border-image: conic-gradient(var(--lime) 0 0) fill 0 / / 0 100vmax 0 0; }
 /* steps: el primero se extiende a la izquierda y el último a la derecha cuando se pintan */

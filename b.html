@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mako&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles-b.css?v=11" />
+  <link rel="stylesheet" href="styles-b.css?v=12" />
   <script>
     /* unidad de escala: 1u = 1px del diseño 1440. Desktop crece con el ancho (siempre ocupa todo el ancho).
        Debajo de 1024 el layout compacto usa px reales (u = 1px). */
@@ -19,6 +19,9 @@
       function setU() {
         var w = r.clientWidth, h = window.innerHeight;
         var u = w >= 1024 ? w / 1440 : 1;   // solo el ancho manda: margen chico de borde a borde, como el diseño
+        /* arriba de 1440 (monitores grandes) se abre un margen lateral de a poco: en 1920 llega a ~190px por lado,
+           el mismo aire que tienen las cards de pricing; el contenido crece mucho menos y los fondos de color ya van a sangre (ver "Fondos a sangre" en el CSS) */
+        if (w > 1440) u = (w - 2 * .396 * (w - 1440)) / 1440;
         r.style.setProperty('--u', u + 'px');
       }
       setU();
