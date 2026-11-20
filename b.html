@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metalens · B</title>
+  <link rel="icon" href="favicon-32.png?v=2" sizes="32x32" type="image/png" />
+  <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Mako&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles-b.css?v=11" />
+  <script>
+    /* unidad de escala: 1u = 1px del diseño 1440. Desktop crece con el ancho (siempre ocupa todo el ancho).
+       Debajo de 1024 el layout compacto usa px reales (u = 1px). */
+    (function () {
+      var r = document.documentElement;
+      function setU() {
+        var w = r.clientWidth, h = window.innerHeight;
+        var u = w >= 1024 ? w / 1440 : 1;   // solo el ancho manda: margen chico de borde a borde, como el diseño
+        r.style.setProperty('--u', u + 'px');
+      }
+      setU();
+      addEventListener('resize', setU);
+      if (window.ResizeObserver) new ResizeObserver(setU).observe(r);
+    })();
+  </script>
+</head>
+<body>
+
+
+  <!-- 1 · HERO -->
+  <header class="hero">
+    <nav class="nav">
+      <a href="#" class="nav__logo" aria-label="Metalens">
+      <svg class="nav__logo-svg" viewBox="0 0 212 24" width="212" height="24" fill="none" aria-hidden="true">
+        <path class="lg lg-r" d="M25.4662 3.35779C26.404 3.35779 27.1467 3.65372 27.6965 4.24797C28.2451 4.84102 28.52 5.67129 28.52 6.73878L28.52 17.2737C28.52 18.3412 28.2405 19.1714 27.6791 19.7645C27.119 20.3575 26.3809 20.6535 25.4662 20.6535L22.2762 20.6535L22.2762 23.9997L25.3981 23.9997C26.2447 23.9997 26.9307 23.8811 27.4562 23.6439C27.9829 23.4067 28.5315 22.9909 29.1032 22.3979L30.7837 20.5828C31.2873 20.0365 31.613 19.4973 31.762 18.9642C31.9109 18.4298 31.9849 17.6774 31.9849 16.7046L31.9849 7.27192C31.9849 6.32304 31.9109 5.58143 31.762 5.04829C31.613 4.51394 31.2873 3.97481 30.7837 3.42968L29.1032 1.61459C28.5315 0.997577 27.9887 0.575853 27.4736 0.351812C26.9584 0.126571 26.2678 0.0139518 25.3981 0.0139517L22.2762 0.0139514L22.2762 3.35899L25.4662 3.35899L25.4662 3.35779Z" fill="#C9DAFE"/>
+        <path class="lg lg-l" d="M6.51865 20.6557C5.58081 20.6557 4.83817 20.3597 4.2884 19.7655C3.73979 19.1724 3.46491 18.3422 3.46491 17.2747L3.46491 6.73979C3.46491 5.6723 3.74441 4.84203 4.30573 4.24898C4.86589 3.65593 5.60391 3.36 6.51865 3.36L9.70868 3.36V0.0137634L6.58679 0.0137634C5.7402 0.0137634 5.05415 0.132373 4.52864 0.369593C4.00197 0.606813 3.45336 1.02255 2.88165 1.6156L1.20117 3.43069C0.697602 3.97701 0.3719 4.51615 0.222909 5.04929C0.0739181 5.58364 0 6.33603 0 7.30887L2.67956e-07 16.7415C2.67956e-07 17.6904 0.0739184 18.432 0.222909 18.9652C0.371901 19.4995 0.697602 20.0387 1.20117 20.5838L2.88165 22.3989C3.45336 23.0159 3.9962 23.4376 4.51131 23.6617C5.02643 23.8869 5.7171 23.9995 6.58679 23.9995H9.70868L9.70868 20.6545H6.51865V20.6557Z" fill="#C9DAFE"/>
+        <path class="lg lg-p" d="M23.9841 11.2164L18.5284 11.0991C17.759 11.0991 17.1352 10.4016 17.1352 9.54116L17.0303 3.44038L15.5183 3.44038L15.4133 9.54116C15.4133 10.4016 14.7896 11.0991 14.0202 11.0991L8.56445 11.2164V12.797L14.0202 12.9144C14.7896 12.9144 15.4133 13.6119 15.4133 14.4723L15.5183 20.5731H17.0303L17.1352 14.4723C17.1352 13.6119 17.759 12.9144 18.5284 12.9144L23.9841 12.797V11.2164Z" fill="#C9DAFE"/>
+        <path class="lg lg-ch" style="--i:0" d="M44.0638 4.90867C44.2457 4.36314 44.6094 3.79557 45.1549 3.20485L46.8588 1.43271C47.3812 0.887176 47.8925 0.512468 48.3929 0.307481C48.8921 0.102494 49.5291 0.00110232 50.3017 0.00110232H53.1308C53.9937 0.00110232 54.6814 0.114617 55.1928 0.341646C55.7042 0.568674 56.1979 0.978648 56.6751 1.56826L58.1067 3.30625L59.47 1.56826C59.9241 1.00069 60.4244 0.596226 60.97 0.358177C61.5155 0.120127 62.1966 0 63.0154 0H65.8445C66.6402 0 67.2817 0.102494 67.771 0.306379C68.2592 0.511366 68.7651 0.886074 69.2875 1.4316L70.9924 3.20375C71.5379 3.79447 71.8961 4.36314 72.0658 4.90757C72.2367 5.4531 72.3215 6.18047 72.3215 7.08859V23.8601H68.8786V6.54416C68.8786 5.52143 68.6064 4.7092 68.0608 4.10746C67.5153 3.50572 66.8 3.20375 65.9128 3.20375H62.7091C61.7315 3.20375 60.9986 3.48809 60.5104 4.05566C60.0211 4.62434 59.7775 5.43106 59.7775 6.47583V23.8601H56.3346V6.47693C56.3346 5.43216 56.0899 4.62544 55.6017 4.05676C55.1123 3.48919 54.3916 3.20485 53.4372 3.20485H50.2334C49.3473 3.20485 48.6254 3.51123 48.0689 4.12509C47.5112 4.73895 47.2335 5.54567 47.2335 6.54526V23.8612H43.7905V7.08969C43.7905 6.18047 43.8809 5.4531 44.0627 4.90867H44.0638Z" fill="#C9DAFE"/>
+        <path class="lg lg-ch" style="--i:1" d="M80.9372 23.5724C80.4027 23.3796 79.8296 23.0104 79.2158 22.4648L77.7158 21.0674C77.1923 20.6133 76.8297 20.1295 76.6247 19.6182C76.4197 19.1068 76.3184 18.5106 76.3184 17.8284V6.0339C76.3184 5.35171 76.4264 4.75548 76.6424 4.24412C76.8584 3.73275 77.2166 3.23902 77.7158 2.76071L79.2158 1.39744C79.8065 0.851909 80.3686 0.482712 80.9031 0.289848C81.4365 0.0969833 82.101 0 82.8968 0H92.5775V3.20375H82.5904C81.6811 3.20375 80.9769 3.43739 80.4766 3.90247C79.9762 4.36865 79.7271 4.98802 79.7271 5.76058V8.55546C79.7271 9.14617 79.8351 9.54954 80.0511 9.76554C80.2672 9.98155 80.6474 10.0896 81.1929 10.0896H91.3851V13.0553H81.1929C80.6474 13.0553 80.2727 13.1577 80.0677 13.3616C79.8627 13.5666 79.7613 13.9755 79.7613 14.5883V18.0312C79.7613 18.8489 80.028 19.4859 80.5625 19.94C81.0959 20.3951 81.841 20.6221 82.7954 20.6221H92.5786V23.8601H82.932C82.1363 23.8601 81.4717 23.7631 80.9383 23.5702L80.9372 23.5724Z" fill="#C9DAFE"/>
+        <path class="lg lg-ch" style="--i:2" d="M101.491 3.66332C101.138 3.35694 100.587 3.20375 99.8375 3.20375H94.2808V0H113.097V3.20375H107.54C106.791 3.20375 106.238 3.35694 105.887 3.66332C105.534 3.9697 105.359 4.44249 105.359 5.07839V23.8601H102.019V5.07729C102.019 4.44139 101.842 3.9697 101.491 3.66222V3.66332Z" fill="#C9DAFE"/>
+        <path class="lg lg-ch" style="--i:3" d="M115.561 4.82271C115.709 4.31134 116.033 3.79447 116.533 3.27208L118.204 1.5341C118.771 0.966526 119.317 0.568674 119.84 0.340543C120.363 0.113514 121.045 0 121.886 0H126.829C127.692 0 128.379 0.108004 128.891 0.324012C129.402 0.54002 129.93 0.943382 130.476 1.5341L132.181 3.27208C132.68 3.77243 132.998 4.28379 133.135 4.80618C133.272 5.32967 133.34 6.05594 133.34 6.9872V23.8601H129.931V18.1678C129.931 17.6223 129.784 17.2024 129.488 16.907C129.193 16.6117 128.772 16.464 128.227 16.464H120.49C119.944 16.464 119.523 16.6117 119.229 16.907C118.933 17.2024 118.786 17.6234 118.786 18.1678V23.8601H115.343V6.9883C115.343 6.05704 115.417 5.33518 115.564 4.82381L115.561 4.82271ZM129.486 13.0553C129.781 12.7599 129.929 12.3389 129.929 11.7945V6.44277C129.929 5.42004 129.645 4.62544 129.077 4.05676C128.508 3.48919 127.77 3.20485 126.862 3.20485H121.816C120.907 3.20485 120.174 3.48919 119.618 4.05676C119.061 4.62544 118.782 5.42004 118.782 6.44277V11.7945C118.782 12.34 118.93 12.761 119.225 13.0553C119.521 13.3506 119.942 13.4983 120.486 13.4983H128.224C128.77 13.4983 129.189 13.3506 129.485 13.0553H129.486Z" fill="#C9DAFE"/>
+        <path class="lg lg-ch" style="--i:4" d="M142.192 23.5537C141.634 23.3487 141.038 22.9398 140.402 22.3271L138.868 20.8613C138.323 20.3389 137.948 19.8099 137.743 19.2765C137.538 18.7431 137.437 18.1006 137.437 17.3501V0H140.879V17.6234C140.879 18.5326 141.169 19.2655 141.749 19.822C142.329 20.3797 143.118 20.6574 144.119 20.6574H151.345V23.8612H144.459C143.505 23.8612 142.749 23.7587 142.192 23.5548V23.5537Z" fill="#C9DAFE"/>
+        <path class="lg lg-ch" style="--i:5" d="M158.575 23.5724C158.041 23.3796 157.468 23.0104 156.854 22.4648L155.354 21.0674C154.83 20.6133 154.468 20.1295 154.263 19.6182C154.058 19.1068 153.957 18.5106 153.957 17.8284V6.0339C153.957 5.35171 154.065 4.75548 154.281 4.24412C154.497 3.73275 154.855 3.23902 155.354 2.76071L156.854 1.39744C157.445 0.851909 158.007 0.482712 158.541 0.289848C159.075 0.0969833 159.739 0 160.535 0H170.216V3.20375H160.229C159.319 3.20375 158.615 3.43739 158.115 3.90247C157.614 4.36865 157.365 4.98802 157.365 5.76058V8.55546C157.365 9.14617 157.473 9.54954 157.689 9.76554C157.905 9.98155 158.286 10.0896 158.831 10.0896H169.023V13.0553H158.831C158.286 13.0553 157.911 13.1577 157.706 13.3616C157.501 13.5666 157.399 13.9755 157.399 14.5883V18.0312C157.399 18.8489 157.666 19.4859 158.201 19.94C158.734 20.3951 159.479 20.6221 160.434 20.6221H170.217V23.8601H160.57C159.774 23.8601 159.11 23.7631 158.577 23.5702L158.575 23.5724Z" fill="#C9DAFE"/>
+        <path class="lg lg-ch" style="--i:6" d="M173.601 0H184.952C185.77 0 186.424 0.0969833 186.912 0.289848C187.4 0.482712 187.883 0.864032 188.361 1.4316L190.168 3.5454C190.667 4.13611 191.003 4.66511 191.173 5.13019C191.343 5.59637 191.428 6.24991 191.428 7.09079V23.8623H187.985V6.54416C187.985 5.54457 187.707 4.73785 187.15 4.12399C186.592 3.51013 185.872 3.20375 184.985 3.20375H178.917C178.235 3.20375 177.752 3.37457 177.468 3.71512C177.184 4.05566 177.042 4.61331 177.042 5.38587V23.8612H173.599V0H173.601Z" fill="#C9DAFE"/>
+        <path class="lg lg-ch" style="--i:7" d="M194.425 20.6563H206.049C206.731 20.6563 207.225 20.5086 207.531 20.2133C207.837 19.9179 207.992 19.4517 207.992 18.8158V16.5323C207.992 16.0331 207.889 15.6242 207.685 15.3057C207.48 14.9883 207.151 14.7381 206.697 14.5563L195.993 10.4312C195.425 10.2042 195.022 9.92535 194.783 9.59582C194.544 9.2663 194.425 8.82878 194.425 8.28325V5.21505C194.425 4.62433 194.51 4.13611 194.681 3.74928C194.851 3.36355 195.141 2.95468 195.55 2.52266L196.777 1.22772C197.186 0.795703 197.612 0.483814 198.055 0.289848C198.498 0.0969833 199.049 0 199.708 0H211.161V3.20375H199.741C199.173 3.20375 198.73 3.35143 198.412 3.64679C198.094 3.94215 197.935 4.38518 197.935 4.9759V6.8847C197.935 7.22525 198.02 7.49856 198.191 7.70245C198.362 7.90633 198.639 8.07716 199.026 8.21381L210.002 12.4403C210.547 12.6673 210.933 12.9638 211.161 13.3264C211.388 13.6901 211.502 14.1904 211.502 14.8263V18.5073C211.502 19.1443 211.423 19.6611 211.263 20.0579C211.104 20.4557 210.808 20.8822 210.377 21.3363L209.15 22.6312C208.741 23.0864 208.315 23.4038 207.872 23.5856C207.429 23.7675 206.832 23.8579 206.082 23.8579H194.424V20.6541L194.425 20.6563Z" fill="#C9DAFE"/>
+      </svg>
+      </a>
+      <button class="nav__toggle" type="button" aria-label="Open menu" aria-controls="main-navigation" aria-expanded="false">
+        <span class="nav__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+      <div class="nav__links" id="main-navigation">
+        <a href="#product">Product</a>
+        <a href="#migration">Free migration</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#demo" class="btn btn--lime">Book a demo</a>
+      </div>
+    </nav>
+
+    <img class="hero__sparkle" src="assets/sparkle.svg" alt="" width="40" height="44" />
+    <p class="hero__kicker">A CMS FOR A<br />MORE HUMAN WEB</p>
+
+    <h1 class="hero__title">
+      <span class="hero__make">Make</span>
+      <img class="hero__br hero__br--l" src="assets/bracket-l.svg" alt="" />
+      <span class="hero__every">every</span>
+      <img class="hero__br hero__br--r" src="assets/bracket-r.svg" alt="" />
+      <span class="hero__line2">visit<br class="hero__mobile-break" /> mean<br class="hero__mobile-break" /> more</span>
+    </h1>
+  </header>
+
+  <!-- 2 · INTRO -->
+  <section class="intro" id="intro">
+    <div class="tag">
+      <img src="assets/tag-l.svg" alt="" />
+      <p>Built for marketing,<br /> careers and content teams.</p>
+      <img src="assets/tag-r.svg" alt="" />
+    </div>
+    <p class="intro__text">
+      <span class="dim">Bring your ideas to life on a website that</span>
+      <span class="hl">speaks to each audience.</span>
+      <span class="dim">Metalens puts editing, personalization and publishing in your team's hands.</span>
+    </p>
+  </section>
+
+  <!-- 3 · PERSON -->
+  <section class="person">
+    <div class="person__left">
+      <p class="label-mako">Created by you.<br /> Experienced by people.</p>
+      <h2 class="display-80">There’s a person<br />behind every visit</h2>
+    </div>
+    <div class="person__right">
+      <img src="assets/star-dark.svg" alt="" width="40" height="40" />
+      <div class="person__copy">
+        <p>A future teammate. A customer with a question. Someone ready for their next step.</p>
+        <p>Give each audience a way forward that feels relevant to them.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · PRODUCT -->
+  <section class="product" id="product">
+    <div class="product__pin">
+      <div class="product__stage">
+        <img class="product__editor" src="assets/editor@2x.png" alt="Metalens editor" width="1306" height="713" />
+      </div>
+      <div class="product__tabs" role="tablist">
+        <button class="ptab ptab--lime is-on" role="tab" data-step="0">
+          <span class="ptab__num">01</span>
+          <span class="ptab__txt">Move Forward. <br />Stay In Control.</span>
+          <i class="ptab__dot"></i>
+        </button>
+        <button class="ptab ptab--sky" role="tab" data-step="1">
+          <span class="ptab__num">02</span>
+          <span class="ptab__txt">One Site. <br />Different Audiences.</span>
+          <i class="ptab__dot"></i>
+        </button>
+        <button class="ptab ptab--dark" role="tab" data-step="2">
+          <span class="ptab__num">03</span>
+          <span class="ptab__txt">See It, <br />Change It.</span>
+          <i class="ptab__dot"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · MIGRATION -->
+  <section class="migration" id="migration">
+    <h2 class="display-166">Make room for<br /><span class="kw">what's</span> next</h2>
+    <p class="migration__lead">Focus on what you want to create next. Bring your site to Metalens with a free migration, with scope and timing agreed together.</p>
+
+    <div class="steps">
+      <div class="steps__pin">
+        <article class="step step--1">
+          <div class="step__head"><span class="step__num">01</span><h3>Show us<br /> your site.</h3></div>
+          <i class="step__plus"></i>
+          <p class="step__body">Walk us through your content and how your team works.</p>
+        </article>
+        <article class="step step--2">
+          <div class="step__head"><span class="step__num">02</span><h3>Plan the<br /> move together.</h3></div>
+          <i class="step__plus"></i>
+          <p class="step__body">Agree on the migration scope, timing and subscription.</p>
+        </article>
+        <article class="step step--3">
+          <div class="step__head"><span class="step__num">03</span><h3>Make yourself<br /> at home.</h3></div>
+          <i class="step__plus"></i>
+          <p class="step__body">Review your site in Metalens and start working with your content.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- B1 · FEATURES (opción B) -->
+  <section class="feats" id="features" aria-labelledby="feats-title">
+    <div class="feats__intro">
+      <h2 class="display-80" id="feats-title">Built for the way<br />your team works</h2>
+      <p class="feats__lead label-supreme">Everything you need to edit, tailor and publish your site, in one place.</p>
+    </div>
+    <div class="feats__grid">
+      <article class="feat feat--lime" style="--d:0">
+        <div class="feat__head"><span class="feat__num">01</span><h3 class="feat__title">Assistant</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Get help writing, editing and organizing content, right where you work.</p>
+      </article>
+      <article class="feat feat--sky" style="--d:1">
+        <div class="feat__head"><span class="feat__num">02</span><h3 class="feat__title">Simulate</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Preview your site as each audience will see it, before anything goes live.</p>
+      </article>
+      <article class="feat feat--dark" style="--d:2">
+        <div class="feat__head"><span class="feat__num">03</span><h3 class="feat__title">Collections</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Shape your own content types: jobs, stories, events, people. Edit them once, use them everywhere.</p>
+      </article>
+      <article class="feat feat--lime" style="--d:3">
+        <div class="feat__head"><span class="feat__num">04</span><h3 class="feat__title">Forms</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Add forms to any page and keep every response in one place.</p>
+      </article>
+      <article class="feat feat--sky" style="--d:4">
+        <div class="feat__head"><span class="feat__num">05</span><h3 class="feat__title">Analytics</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">See how each page and audience performs, and what to improve next.</p>
+      </article>
+      <article class="feat feat--dark" style="--d:5">
+        <div class="feat__head"><span class="feat__num">06</span><h3 class="feat__title">User profiles</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Understand who is visiting and give each profile content that fits.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- B2 · POLYMORPHIC (opción B): qué es, en dos cards vivas -->
+  <section class="live" id="polymorphic" aria-labelledby="live-title">
+    <div class="live__intro">
+      <div class="live__titles">
+        <p class="label-mako">Polymorphic design</p>
+        <h2 class="display-80" id="live-title">A site that adapts<br />to each visitor</h2>
+      </div>
+      <p class="live__lead">Metalens is built on Polymorphic Design, a framework for adaptive experiences. Your team sets the rules. The site adapts to each person who visits.</p>
+    </div>
+    <div class="live__panels live__panels--one">
+      <article class="live__panel live__panel--sky" data-cmp>
+        <div class="live__side">
+        <header class="live__head"><h3 class="live__name">One site, shaped for each person</h3></header>
+        <div class="aud__chips" role="tablist" aria-label="Visitor">
+          <button class="aud__chip is-on" role="tab" aria-selected="true" data-i="0">Candidate</button>
+          <button class="aud__chip" role="tab" aria-selected="false" data-i="1">Customer</button>
+          <button class="aud__chip" role="tab" aria-selected="false" data-i="2">Partner</button>
+        </div>
+        <p class="live__caption">Your team designs the standard page and decides what can change. Drag to compare it with what each person sees.</p>
+        </div>
+        <div class="cmp" style="--x: 50%">
+          <div class="cmp__page cmp__page--std" aria-hidden="true">
+            <p class="cmp__tag">Standard</p>
+            <p class="cmp__title">Make every<br />visit count</p>
+            <p class="cmp__copy">A website that speaks to whoever arrives.</p>
+            <span class="cmp__cta">Explore</span>
+          </div>
+          <div class="cmp__page cmp__page--alt" aria-live="polite">
+            <p class="cmp__tag"><span class="sw"><span style="--i:0">Came from a job post</span></span></p>
+            <p class="cmp__title"><span class="sw"><span style="--i:1">Find your</span></span><span class="sw"><span style="--i:2">next team</span></span></p>
+            <p class="cmp__copy"><span class="sw"><span style="--i:3">Open roles, real stories and how we work.</span></span></p>
+            <span class="cmp__cta"><span class="sw"><span style="--i:4">See open roles</span></span></span>
+          </div>
+          <button class="cmp__handle" role="slider" aria-label="Compare the standard page with the adapted one" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><i></i></button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 6 · PRICING -->
+  <section class="pricing" id="pricing" aria-labelledby="pricing-title">
+    <div class="pricing__intro">
+      <h2 class="pricing__title" id="pricing-title">The right fit for<br /> your content.</h2>
+      <p class="pricing__lead label-supreme">Choose a plan that<br /> works for your team.</p>
+    </div>
+
+    <div class="pricing__plans">
+      <article class="price-card price-card--starter" aria-labelledby="starter-title">
+        <div class="price-card__intro">
+          <h3 class="price-card__name" id="starter-title">Starter pack</h3>
+          <p class="price-card__price">$1000</p>
+          <p class="price-card__description">Everything you need to create, manage, and publish your first website.</p>
+        </div>
+        <div class="price-card__body">
+          <ul class="price-card__features">
+            <li>Free migration of one website</li>
+            <li>Centralized content dashboard</li>
+            <li>Visual content editor</li>
+            <li>Custom content collections</li>
+            <li>Up to 3 team members</li>
+          </ul>
+          <a class="btn btn--dark price-card__cta" href="#demo" aria-label="Book a demo for the Starter pack">Book a demo</a>
+        </div>
+      </article>
+
+      <article class="price-card price-card--enterprise" aria-labelledby="enterprise-title">
+        <div class="price-card__intro">
+          <h3 class="price-card__name" id="enterprise-title">Enterprise</h3>
+          <p class="price-card__price">Custom plan</p>
+          <p class="price-card__description">One powerful platform to manage multiple websites, teams, and content at scale.</p>
+        </div>
+        <div class="price-card__body">
+          <ul class="price-card__features">
+            <li>Free migration of multiple websites</li>
+            <li>Centralized content dashboard</li>
+            <li>Visual content editor</li>
+            <li>Custom content collections</li>
+            <li>Up to 10 team members</li>
+          </ul>
+          <a class="btn btn--dark price-card__cta" href="#demo" aria-label="Book a demo for the Enterprise plan">Book a demo</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 7 · FAQ -->
+  <section class="faq" id="faq" aria-labelledby="faq-title">
+    <div class="faq__left">
+      <h2 class="display-80" id="faq-title">A clear path<br />from here</h2>
+      <p class="label-supreme">Before you take<br /> the next step</p>
+    </div>
+    <div class="faq__list">
+      <details class="qa" open>
+        <summary><span class="qa__num">01</span><span class="qa__q">Do I need a developer to update content?</span><i class="qa__plus"></i></summary>
+        <p class="qa__a">No. Use the visual editor to update content directly on your site. Your team can manage everyday changes and publish without waiting on a developer.</p>
+      </details>
+      <details class="qa">
+        <summary><span class="qa__num">02</span><span class="qa__q">Can different audiences see different content?</span><i class="qa__plus"></i></summary>
+        <p class="qa__a">Yes. You can tailor content for different audiences within the same site, giving each audience a more relevant experience.</p>
+      </details>
+      <details class="qa">
+        <summary><span class="qa__num">03</span><span class="qa__q">Can my team approve changes before publishing?</span><i class="qa__plus"></i></summary>
+        <p class="qa__a">Yes. Your team can review changes and approve content before it goes live, keeping you in control from the first edit to the final approval.</p>
+      </details>
+      <details class="qa">
+        <summary><span class="qa__num">04</span><span class="qa__q">How does pricing work?</span><i class="qa__plus"></i></summary>
+        <p class="qa__a">The $1000 Starter pack includes free migration of one website and up to 3 team members. Enterprise offers custom pricing for multiple websites and up to 10 team members. We’ll agree on your subscription and migration scope together before getting started.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- 8 · DEMO + FOOTER -->
+  <footer class="demo" id="demo">
+    <div class="demo__top">
+      <div class="demo__left">
+        <h2 class="demo__title">Book a demo</h2>
+        <div class="demo__note">
+          <img src="assets/star-light.svg" alt="" width="40" height="40" />
+          <p>Tell us about your site, your team<br /> and the people you want to reach.<br /> We’ll take it from there.</p>
+        </div>
+      </div>
+      <form class="form" onsubmit="event.preventDefault()">
+        <p class="form__title">Every site starts with a conversation.</p>
+        <label class="field"><i></i><input type="text" name="name" placeholder="Name" /></label>
+        <label class="field"><i></i><input type="email" name="email" placeholder="Work email" /></label>
+        <label class="field"><i></i><input type="url" name="website" placeholder="Company website" /></label>
+        <label class="field field--opt"><i></i><input type="text" name="message" placeholder="Message" /><small>(optional)</small></label>
+        <button type="submit" class="btn btn--dark">Get in touch</button>
+      </form>
+    </div>
+
+    <hr class="demo__rule" />
+
+    <div class="cols">
+      <div class="col">
+        <p class="col__label">Created with love at</p>
+        <a href="https://aerolab.co" class="col__aerolab" aria-label="Aerolab">
+        <svg class="al" viewBox="23.5 119.8 102 17.8" aria-hidden="true">
+          <g class="al__kite"><g class="al__sway"><path fill="#fff" fill-rule="evenodd" clip-rule="evenodd" d="M34.7901 136.531C33.7624 137.11 32.5705 137.264 31.5125 137.037C28.9857 136.496 27.5098 134.417 27.137 131.435C26.991 130.262 26.8358 128.911 26.3305 127.778C25.9181 126.85 25.2462 126.083 24.0635 125.803C24.0191 125.792 23.9925 125.749 24.0019 125.704C24.0675 125.393 24.3041 124.272 24.3703 123.958C24.3749 123.937 24.3896 123.918 24.4066 123.905C24.4269 123.894 24.4492 123.89 24.4697 123.894C26.3578 124.325 27.4426 125.51 28.0985 126.98C28.678 128.287 28.891 129.839 29.0598 131.193C29.313 133.232 30.1861 134.759 31.9152 135.129C32.6137 135.278 33.4146 135.146 34.0617 134.692C34.0914 134.67 34.1032 134.63 34.0893 134.595C33.8161 133.837 31.0144 126.068 30.7377 125.294C30.724 125.257 30.7363 125.216 30.7694 125.195C31.4172 124.77 37.5748 120.74 38.3009 120.267C38.3178 120.254 38.3403 120.25 38.3608 120.255C38.3848 120.26 38.4035 120.273 38.4139 120.291C38.8862 121.021 42.8875 127.226 43.3079 127.879C43.3296 127.912 43.3276 127.955 43.3003 127.983C42.6911 128.614 36.2655 135.305 36.2606 135.311C36.2599 135.315 36.2557 135.318 36.2515 135.32C36.0033 135.581 35.4078 136.181 34.7901 136.531Z"/></g></g>
+          <g class="al__type"><path fill="#fff" transform="translate(46.271 121.37)" d="M12.6766 15.4503V13.5719C12.6766 13.5155 12.6474 13.4872 12.5889 13.4872H11.9602C11.4631 13.4872 11.1999 13.2189 11.1999 12.7528V8.04995C11.1999 5.26776 8.68501 4.03909 6.05319 4.03909C3.08508 4.03909 0.570229 4.88647 0.380153 7.71101C0.380153 7.76749 0.409395 7.79574 0.467878 7.79574H2.76341C2.80727 7.79574 2.85114 7.76749 2.86576 7.71101C2.99736 6.68006 4.15243 6.04453 5.83386 6.04453C7.66153 6.04453 8.72887 6.62356 8.72887 7.56977V7.89459C8.72887 8.50187 8.261 9.03854 7.07667 9.03854H5.90699C2.04697 9.03854 0 10.1825 0 12.4139C0 14.5888 1.75455 15.7327 4.95661 15.7327C7.26676 15.7327 8.58267 14.843 9.32835 14.1651C9.37221 14.1227 9.41607 14.1368 9.43069 14.1933C9.73773 15.0407 10.5858 15.535 11.9748 15.535H12.5889C12.6474 15.535 12.6766 15.4926 12.6766 15.4503ZM8.72887 10.931V11.2134C8.72887 12.654 7.26676 13.7132 5.46834 13.7132C3.30441 13.7132 2.48561 13.2612 2.48561 12.2726C2.48561 11.397 3.56757 10.8462 5.90699 10.8462H8.64115C8.69963 10.8462 8.72887 10.8745 8.72887 10.931ZM12.969 9.88592C12.969 13.3742 15.4839 15.7327 19.0369 15.7327C21.9465 15.7327 24.1543 14.4617 24.7537 12.2868C24.7684 12.2303 24.7391 12.1879 24.6806 12.1879H22.2535C22.2096 12.1879 22.1658 12.202 22.1512 12.2444C21.6687 13.1482 20.8206 13.7273 19.0369 13.7273C16.8729 13.7273 15.6593 12.428 15.6009 10.931C15.6009 10.8745 15.6301 10.8462 15.6886 10.8462H25.0022C25.0461 10.8462 25.0901 10.818 25.0901 10.7615C25.3531 6.93425 22.8822 4.03909 19.0369 4.03909C15.4985 4.03909 12.969 6.35522 12.969 9.88592ZM15.6009 8.9538C15.5716 7.89459 16.6097 6.04453 19.0369 6.04453C21.464 6.04453 22.4436 7.62627 22.429 8.9538C22.429 9.01029 22.3851 9.03854 22.3413 9.03854H15.6886C15.6447 9.03854 15.6009 9.01029 15.6009 8.9538ZM31.8159 6.35522H33.2779C33.3364 6.35522 33.3655 6.32699 33.3655 6.2705V4.32155C33.3655 4.26506 33.3218 4.23681 33.2779 4.23681H32.2105C31.0118 4.23681 29.7834 4.64637 28.9355 5.59261C28.8916 5.64908 28.8331 5.63497 28.8185 5.56436L28.5115 4.30744C28.4967 4.26506 28.4676 4.23681 28.4236 4.23681H26.5084C26.4499 4.23681 26.4205 4.27919 26.4205 4.32155V15.4503C26.4205 15.5068 26.4644 15.535 26.5084 15.535H28.6723C28.7308 15.535 28.76 15.4926 28.76 15.4503V9.87178C28.76 7.4568 30.0321 6.35522 31.8159 6.35522ZM45.6329 9.88592C45.6329 6.31286 43.001 4.03909 39.4188 4.03909C35.8366 4.03909 33.2193 6.31286 33.2193 9.88592C33.2193 13.4448 35.8512 15.7327 39.4188 15.7327C42.9864 15.7327 45.6329 13.4448 45.6329 9.88592ZM43.1181 9.88592C43.1181 12.1173 41.4659 13.7273 39.4188 13.7273C37.3866 13.7273 35.7344 12.1032 35.7344 9.88592C35.7344 7.66863 37.3866 6.04453 39.4188 6.04453C41.4659 6.04453 43.1181 7.65452 43.1181 9.88592ZM51.2327 15.4503V13.5013C51.2327 13.4448 51.2036 13.4166 51.1451 13.4166H50.5163C49.8292 13.4166 49.3321 13.12 49.3321 12.315C49.3321 10.8886 49.7122 9.43397 50.0046 7.85223C50.3555 6.0304 50.7065 3.96849 50.7504 3.00814C50.8527 0.889731 49.5806 0 48.016 0H47.0366C46.9781 0 46.9487 0.0282454 46.9487 0.084736V1.96306C46.9487 2.01955 46.9926 2.04779 47.0366 2.04779H47.5483C48.06 2.04779 48.3816 2.31612 48.4109 2.97989C48.4401 3.86963 48.1331 5.29601 47.6945 7.5133C47.3581 9.25039 47.0072 11.0722 47.0072 12.7387C47.0072 14.5323 48.2793 15.535 50.2093 15.535H51.1451C51.2036 15.535 51.2327 15.4926 51.2327 15.4503ZM64.155 15.4503V4.32155C64.155 4.26506 64.1258 4.23681 64.0673 4.23681H62.1373C62.0936 4.23681 62.0642 4.26506 62.0496 4.30744L61.7863 5.40901C61.7718 5.4655 61.7132 5.47961 61.6695 5.43725C60.6167 4.43452 59.213 4.03909 57.8095 4.03909C54.315 4.03909 51.8585 6.41171 51.8585 9.90003C51.8585 13.3742 54.3296 15.7327 57.8095 15.7327C59.1839 15.7327 60.8652 15.2525 61.6695 14.3346C61.7278 14.2781 61.7718 14.2922 61.7863 14.3628L62.0496 15.4644C62.0642 15.5068 62.0936 15.535 62.1373 15.535H64.0673C64.1258 15.535 64.155 15.4926 64.155 15.4503ZM54.3735 9.90003C54.3735 7.62627 56.0111 6.04453 58.058 6.04453C60.1781 6.04453 61.6695 7.69688 61.6695 9.90003C61.6695 12.089 60.1781 13.7273 58.058 13.7273C56.0257 13.7273 54.3735 12.1455 54.3735 9.90003ZM65.9096 0.084736V15.4503C65.9096 15.5068 65.9388 15.535 65.9973 15.535H67.9273C67.9713 15.535 68.0004 15.5068 68.015 15.4644L68.2636 14.4334C68.2782 14.3769 68.3368 14.3487 68.3807 14.3911C69.5064 15.3373 71.0123 15.7327 72.2553 15.7327C75.735 15.7327 78.2061 13.3742 78.2061 9.90003C78.2061 6.41171 75.6036 4.03909 72.1091 4.03909C70.6468 4.03909 69.5503 4.4063 68.3513 5.39487C68.2928 5.45137 68.2491 5.42312 68.2491 5.35251V0.084736C68.2491 0.0282454 68.2051 0 68.1612 0H65.9973C65.9388 0 65.9096 0.0423684 65.9096 0.084736ZM75.6913 9.90003C75.6913 12.1173 74.0391 13.7273 72.0066 13.7273C69.8867 13.7273 68.3953 12.0608 68.3953 9.90003C68.3953 7.73926 69.8867 6.05865 72.0066 6.05865C74.0537 6.05865 75.6913 7.66863 75.6913 9.90003Z"/></g>
+        </svg>
+        </a>
+      </div>
+      <div class="col">
+        <p class="col__label">Contact</p>
+        <a href="mailto:hello@metalens.com">hello@metalens.com</a>
+      </div>
+      <div class="col">
+        <p class="col__label">Product</p>
+        <a href="#product">Explore the editor</a>
+        <a href="#migration">Free migration</a>
+      </div>
+    </div>
+
+    <div class="demo__logo-mask">
+      <svg class="demo__logo" viewBox="0 0 1392 162" fill="none" role="img" aria-label="Metalens">
+        <g class="ch" style="--i:0"><path d="M166.23 24.0181C172.599 24.0181 177.643 25.9877 181.377 29.9427C185.103 33.8898 186.97 39.4157 186.97 46.5204L186.97 116.636C186.97 123.741 185.071 129.267 181.259 133.214C177.455 137.161 172.442 139.13 166.23 139.13L144.564 139.13L144.564 161.401L165.767 161.401C171.517 161.401 176.176 160.612 179.745 159.033C183.322 157.454 187.048 154.687 190.931 150.74L202.344 138.66C205.764 135.024 207.976 131.436 208.988 127.887C210 124.331 210.502 119.323 210.502 112.848L210.502 50.0688C210.502 43.7535 210 38.8176 208.988 35.2692C207.976 31.7129 205.764 28.1246 202.344 24.4965L190.931 12.4161C187.048 8.30954 183.361 5.50273 179.863 4.01161C176.364 2.51252 171.674 1.76297 165.767 1.76297L144.564 1.76296L144.564 24.0261L166.23 24.0261L166.23 24.0181Z" fill="#C9DAFE"/><path d="M44.2722 137.383C37.9027 137.383 32.859 135.414 29.1252 131.459C25.3992 127.512 23.5323 121.986 23.5323 114.881L23.5323 44.7654C23.5323 37.6607 25.4306 32.1347 29.2428 28.1877C33.0472 24.2406 38.0596 22.2711 44.2722 22.2711H65.9376V0L44.735 0C38.9852 0 34.3258 0.789414 30.7568 2.36824C27.1798 3.94707 23.4539 6.71401 19.5711 10.6611L8.15788 22.7415C4.73784 26.3776 2.5258 29.9659 1.51391 33.5142C0.502023 37.0706 0 42.0782 0 48.553L1.81985e-06 111.333C1.81985e-06 117.648 0.502025 122.584 1.51392 126.132C2.52581 129.688 4.73784 133.277 8.15788 136.905L19.5711 148.985C23.4539 153.092 27.1406 155.899 30.6391 157.39C34.1376 158.889 38.8284 159.638 44.735 159.638H65.9376V137.375H44.2722V137.383Z" fill="#C9DAFE"/><path d="M153.705 74.4047L117.511 73.5683C112.406 73.5683 108.268 68.5982 108.268 62.4667L107.572 18.9932L99.5917 18.9932L98.8953 62.4667C98.8953 68.5982 94.7574 73.5683 89.6527 73.5683L53.4585 74.4047V83.5036L89.6527 84.34C94.7574 84.34 98.8953 89.3101 98.8953 95.4415L99.5917 138.915H107.572L108.268 95.4415C108.268 89.3101 112.406 84.34 117.511 84.34L153.705 83.5036V74.4047Z" fill="#C9DAFE"/></g>
+        <g class="ch" style="--i:1"><path d="M259.845 33.2158C261.074 29.527 263.534 25.6891 267.222 21.6948L278.744 9.71171C282.276 6.0229 285.734 3.48917 289.117 2.10308C292.493 0.716976 296.8 0.0313795 302.024 0.0313795H321.154C326.989 0.0313795 331.64 0.798951 335.098 2.33409C338.555 3.86923 341.894 6.64143 345.121 10.6283L354.801 22.3804L364.02 10.6283C367.09 6.79047 370.473 4.05554 374.162 2.44587C377.851 0.83621 382.457 0.0239258 387.994 0.0239258H407.123C412.504 0.0239258 416.841 0.716977 420.15 2.09562C423.451 3.48172 426.872 6.01545 430.404 9.70426L441.933 21.6873C445.622 25.6817 448.044 29.527 449.191 33.2083C450.346 36.8971 450.92 41.8156 450.92 47.9561V161.363H427.64V44.2748C427.64 37.3592 425.799 31.8669 422.11 27.7981C418.421 23.7292 413.585 21.6873 407.585 21.6873H385.922C379.312 21.6873 374.356 23.61 371.055 27.4478C367.746 31.2931 366.099 36.7481 366.099 43.8127V161.363H342.818V43.8202C342.818 36.7556 341.164 31.3006 337.862 27.4553C334.553 23.6174 329.68 21.6948 323.226 21.6948H301.562C295.571 21.6948 290.69 23.7665 286.926 27.9173C283.155 32.0681 281.277 37.5231 281.277 44.2822V161.37H257.997V47.9636C257.997 41.8156 258.608 36.8971 259.837 33.2158H259.845Z" fill="#C9DAFE"/></g>
+        <g class="ch" style="--i:2"><path d="M509.118 159.418C505.504 158.114 501.629 155.617 497.478 151.928L487.335 142.479C483.795 139.409 481.344 136.137 479.957 132.68C478.571 129.222 477.886 125.19 477.886 120.577V40.8244C477.886 36.2115 478.616 32.1799 480.077 28.7221C481.537 25.2643 483.959 21.9258 487.335 18.6915L497.478 9.47324C501.472 5.78443 505.273 3.28797 508.887 1.98384C512.494 0.679715 516.988 0.0239258 522.368 0.0239258H587.829V21.6873H520.296C514.148 21.6873 509.386 23.2672 506.003 26.412C502.62 29.5642 500.936 33.7523 500.936 38.9763V57.8749C500.936 61.8693 501.666 64.5968 503.126 66.0574C504.587 67.518 507.158 68.2483 510.847 68.2483H579.765V88.302H510.847C507.158 88.302 504.624 88.9951 503.238 90.3737C501.852 91.7598 501.167 94.5246 501.167 98.668V121.948C501.167 127.478 502.97 131.785 506.584 134.856C510.191 137.933 515.229 139.468 521.683 139.468H587.836V161.363H522.607C517.226 161.363 512.732 160.707 509.126 159.403L509.118 159.418Z" fill="#C9DAFE"/></g>
+        <g class="ch" style="--i:3"><path d="M648.118 24.7949C645.733 22.7232 642.007 21.6873 636.939 21.6873H599.365V0.0239258H726.597V21.6873H689.023C683.956 21.6873 680.222 22.7232 677.845 24.7949C675.46 26.8666 674.275 30.0635 674.275 34.3634V161.363H651.687V34.356C651.687 30.0561 650.495 26.8666 648.118 24.7874V24.7949Z" fill="#C9DAFE"/></g>
+        <g class="ch" style="--i:4"><path d="M743.28 32.6345C744.278 29.1767 746.469 25.6817 749.853 22.1493L761.15 10.3973C764.988 6.55946 768.677 3.86923 772.217 2.32664C775.749 0.791497 780.362 0.0239258 786.048 0.0239258H819.471C825.307 0.0239258 829.957 0.754238 833.415 2.21486C836.873 3.67548 840.442 6.40296 844.131 10.3973L855.66 22.1493C859.035 25.5326 861.189 28.9904 862.113 32.5227C863.037 36.0625 863.499 40.9735 863.499 47.2705V161.363H840.45V122.873C840.45 119.184 839.451 116.344 837.454 114.347C835.457 112.35 832.61 111.352 828.928 111.352H776.606C772.917 111.352 770.071 112.35 768.081 114.347C766.084 116.344 765.085 119.191 765.085 122.873V161.363H741.804V47.278C741.804 40.9809 742.304 36.0998 743.302 32.642L743.28 32.6345ZM837.439 88.302C839.436 86.3049 840.435 83.4581 840.435 79.7768V43.5892C840.435 36.6736 838.512 31.3006 834.674 27.4553C830.829 23.6174 825.836 21.6948 819.695 21.6948H785.579C779.431 21.6948 774.475 23.6174 770.711 27.4553C766.948 31.3006 765.063 36.6736 765.063 43.5892V79.7768C765.063 83.4656 766.061 86.3123 768.058 88.302C770.056 90.2992 772.902 91.2978 776.584 91.2978H828.906C832.595 91.2978 835.434 90.2992 837.431 88.302H837.439Z" fill="#C9DAFE"/></g>
+        <g class="ch" style="--i:5"><path d="M923.353 159.291C919.582 157.905 915.55 155.14 911.25 150.997L900.877 141.086C897.188 137.553 894.654 133.976 893.268 130.369C891.882 126.763 891.196 122.418 891.196 117.343V0.0239258H914.477V119.191C914.477 125.339 916.437 130.295 920.357 134.058C924.277 137.829 929.613 139.707 936.379 139.707H985.244V161.37H938.682C932.228 161.37 927.116 160.677 923.353 159.299V159.291Z" fill="#C9DAFE"/></g>
+        <g class="ch" style="--i:6"><path d="M1034.16 159.418C1030.55 158.114 1026.67 155.617 1022.52 151.928L1012.38 142.479C1008.84 139.409 1006.39 136.137 1005 132.68C1003.62 129.222 1002.93 125.19 1002.93 120.577V40.8244C1002.93 36.2115 1003.66 32.1799 1005.12 28.7221C1006.58 25.2643 1009 21.9258 1012.38 18.6915L1022.52 9.47324C1026.52 5.78443 1030.32 3.28797 1033.93 1.98384C1037.54 0.679715 1042.03 0.0239258 1047.41 0.0239258H1112.87V21.6873H1045.34C1039.19 21.6873 1034.43 23.2672 1031.05 26.412C1027.66 29.5642 1025.98 33.7523 1025.98 38.9763V57.8749C1025.98 61.8693 1026.71 64.5968 1028.17 66.0574C1029.63 67.518 1032.2 68.2483 1035.89 68.2483H1104.81V88.302H1035.89C1032.2 88.302 1029.67 88.9951 1028.28 90.3737C1026.9 91.7598 1026.21 94.5246 1026.21 98.668V121.948C1026.21 127.478 1028.01 131.785 1031.63 134.856C1035.24 137.933 1040.27 139.468 1046.73 139.468H1112.88V161.363H1047.65C1042.27 161.363 1037.78 160.707 1034.17 159.403L1034.16 159.418Z" fill="#C9DAFE"/></g>
+        <g class="ch" style="--i:7"><path d="M1135.72 0.0239258H1212.48C1218.01 0.0239258 1222.43 0.679715 1225.73 1.98384C1229.03 3.28797 1232.3 5.86641 1235.53 9.70426L1247.74 23.9975C1251.12 27.9918 1253.39 31.5689 1254.54 34.7137C1255.7 37.8659 1256.27 42.285 1256.27 47.971V161.378H1232.99V44.2748C1232.99 37.5157 1231.1 32.0607 1227.34 27.9099C1223.57 23.759 1218.69 21.6873 1212.7 21.6873H1171.67C1167.06 21.6873 1163.79 22.8424 1161.87 25.1451C1159.95 27.4478 1158.99 31.2186 1158.99 36.4426V161.37H1135.71V0.0239258H1135.72Z" fill="#C9DAFE"/></g>
+        <g class="ch" style="--i:8"><path d="M1276.53 139.699H1355.13C1359.74 139.699 1363.08 138.701 1365.15 136.704C1367.22 134.707 1368.26 131.554 1368.26 127.254V111.814C1368.26 108.438 1367.57 105.673 1366.19 103.519C1364.81 101.373 1362.58 99.6815 1359.51 98.4519L1287.13 70.5585C1283.29 69.0233 1280.57 67.1379 1278.95 64.9098C1277.33 62.6816 1276.53 59.7231 1276.53 56.0342V35.2875C1276.53 31.2931 1277.1 27.9918 1278.26 25.3761C1279.41 22.7679 1281.37 20.0031 1284.14 17.0819L1292.43 8.32561C1295.2 5.40437 1298.08 3.29542 1301.08 1.98384C1304.07 0.679715 1307.8 0.0239258 1312.25 0.0239258H1389.7V21.6873H1312.48C1308.63 21.6873 1305.64 22.6859 1303.49 24.6831C1301.34 26.6803 1300.26 29.676 1300.26 33.6704V46.5775C1300.26 48.8802 1300.84 50.7283 1301.99 52.107C1303.15 53.4856 1305.02 54.6407 1307.64 55.5648L1381.86 84.1437C1385.55 85.6789 1388.15 87.6835 1389.7 90.1353C1391.23 92.5945 1392 95.9777 1392 100.278V125.168C1392 129.475 1391.46 132.97 1390.38 135.653C1389.31 138.343 1387.31 141.227 1384.39 144.297L1376.1 153.054C1373.33 156.131 1370.45 158.278 1367.45 159.507C1364.46 160.737 1360.42 161.348 1355.35 161.348H1276.52V139.685L1276.53 139.699Z" fill="#C9DAFE"/></g>
+      </svg>
+    </div>
+  </footer>
+
+
+  <script src="animations-b.js?v=9"></script>
+</body>
+</html>
