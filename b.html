@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mako&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles-b.css?v=12" />
+  <link rel="stylesheet" href="styles-b.css?v=17" />
   <script>
     /* unidad de escala: 1u = 1px del diseño 1440. Desktop crece con el ancho (siempre ocupa todo el ancho).
        Debajo de 1024 el layout compacto usa px reales (u = 1px). */
@@ -109,7 +109,7 @@
       <div class="product__stage">
         <img class="product__editor" src="assets/editor@2x.png" alt="Metalens editor" width="1306" height="713" />
       </div>
-      <div class="product__tabs" role="tablist">
+      <div class="product__tabs" role="tablist" aria-label="Product features">
         <button class="ptab ptab--lime is-on" role="tab" data-step="0">
           <span class="ptab__num">01</span>
           <span class="ptab__txt">Move Forward. <br />Stay In Control.</span>
@@ -195,43 +195,40 @@
     </div>
   </section>
 
-  <!-- B2 · POLYMORPHIC (opción B): qué es, en dos cards vivas -->
+  <!-- B2 · POLYMORPHIC DESIGN -->
   <section class="live" id="polymorphic" aria-labelledby="live-title">
-    <div class="live__intro">
-      <div class="live__titles">
+    <div class="live__surface">
+      <div class="live__intro">
         <p class="label-mako">Polymorphic design</p>
-        <h2 class="display-80" id="live-title">A site that adapts<br />to each visitor</h2>
+        <h2 class="display-80" id="live-title">Site that adapts<br />to each visitor</h2>
+        <p class="live__lead">Metalens is built on Polymorphic Design, a framework for adaptive experiences. Your team sets the rules. The site adapts to each person who visits.</p>
       </div>
-      <p class="live__lead">Metalens is built on Polymorphic Design, a framework for adaptive experiences. Your team sets the rules. The site adapts to each person who visits.</p>
-    </div>
-    <div class="live__panels live__panels--one">
-      <article class="live__panel live__panel--sky" data-cmp>
-        <div class="live__side">
-        <header class="live__head"><h3 class="live__name">One site, shaped for each person</h3></header>
+      <article class="live__panel" data-cmp>
+        <header class="live__head">
+          <h3 class="live__name">One site, shaped for each person</h3>
+          <button class="live__playback" type="button" aria-label="Pause demo animation" aria-controls="visitor-preview" data-playing="true" hidden><span class="live__playback-icon" aria-hidden="true"></span><span class="live__playback-label">Pause</span></button>
+          <p class="live__description">Your team designs the standard page and decides what can change. Choose a visitor to see how the page adapts.</p>
+        </header>
         <div class="aud__chips" role="tablist" aria-label="Visitor">
-          <button class="aud__chip is-on" role="tab" aria-selected="true" data-i="0">Candidate</button>
-          <button class="aud__chip" role="tab" aria-selected="false" data-i="1">Customer</button>
-          <button class="aud__chip" role="tab" aria-selected="false" data-i="2">Partner</button>
+          <button class="aud__chip is-on" id="visitor-candidate" role="tab" aria-selected="true" aria-controls="visitor-preview" tabindex="0" data-i="0">Candidate</button>
+          <button class="aud__chip" id="visitor-customer" role="tab" aria-selected="false" aria-controls="visitor-preview" tabindex="-1" data-i="1">Customer</button>
+          <button class="aud__chip" id="visitor-partner" role="tab" aria-selected="false" aria-controls="visitor-preview" tabindex="-1" data-i="2">Partner</button>
         </div>
-        <p class="live__caption">Your team designs the standard page and decides what can change. Drag to compare it with what each person sees.</p>
-        </div>
-        <div class="cmp" style="--x: 50%">
+        <div class="cmp is-adapted" id="visitor-preview" role="tabpanel" aria-labelledby="visitor-candidate" aria-live="off">
           <div class="cmp__page cmp__page--std" aria-hidden="true">
             <p class="cmp__tag">Standard</p>
             <p class="cmp__title">Make every<br />visit count</p>
             <p class="cmp__copy">A website that speaks to whoever arrives.</p>
             <span class="cmp__cta">Explore</span>
           </div>
-          <div class="cmp__page cmp__page--alt" aria-live="polite">
+          <div class="cmp__page cmp__page--alt" aria-hidden="false">
             <p class="cmp__tag"><span class="sw"><span style="--i:0">Came from a job post</span></span></p>
             <p class="cmp__title"><span class="sw"><span style="--i:1">Find your</span></span><span class="sw"><span style="--i:2">next team</span></span></p>
             <p class="cmp__copy"><span class="sw"><span style="--i:3">Open roles, real stories and how we work.</span></span></p>
             <span class="cmp__cta"><span class="sw"><span style="--i:4">See open roles</span></span></span>
           </div>
-          <button class="cmp__handle" role="slider" aria-label="Compare the standard page with the adapted one" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><i></i></button>
         </div>
       </article>
-
     </div>
   </section>
 
@@ -319,10 +316,10 @@
       </div>
       <form class="form" onsubmit="event.preventDefault()">
         <p class="form__title">Every site starts with a conversation.</p>
-        <label class="field"><i></i><input type="text" name="name" placeholder="Name" /></label>
-        <label class="field"><i></i><input type="email" name="email" placeholder="Work email" /></label>
-        <label class="field"><i></i><input type="url" name="website" placeholder="Company website" /></label>
-        <label class="field field--opt"><i></i><input type="text" name="message" placeholder="Message" /><small>(optional)</small></label>
+        <label class="field"><i></i><input type="text" name="name" placeholder="Name" aria-label="Name" autocomplete="name" /></label>
+        <label class="field"><i></i><input type="email" name="email" placeholder="Work email" aria-label="Work email" autocomplete="email" /></label>
+        <label class="field"><i></i><input type="url" name="website" placeholder="Company website" aria-label="Company website" autocomplete="url" /></label>
+        <label class="field field--opt"><i></i><input type="text" name="message" placeholder="Message" aria-label="Message (optional)" /><small>(optional)</small></label>
         <button type="submit" class="btn btn--dark">Get in touch</button>
       </form>
     </div>
@@ -366,6 +363,6 @@
   </footer>
 
 
-  <script src="animations-b.js?v=9"></script>
+  <script src="animations-b.js?v=12"></script>
 </body>
 </html>

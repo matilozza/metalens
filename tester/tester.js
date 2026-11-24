@@ -4,7 +4,7 @@
   const groups = { mobile: 'Mobile', tablet: 'Tablet / compacto', desktop: 'Desktop', landscape: 'Horizontal', custom: 'Personalizadas' };
   const presets = sizes.map(([width, height]) => ({ id: `${width}x${height}`, width, height, group: width >= 1024 ? 'desktop' : width > height ? 'landscape' : width < 600 ? 'mobile' : 'tablet' }));
   const mainIds = ['390x844', '768x1024', '1440x900'];
-  const sections = { hero: '.hero', intro: '#intro', person: '.person', product: '#product', migration: '#migration', pricing: '#pricing', faq: '#faq', demo: '#demo' };
+  const sections = { hero: '.hero', intro: '#intro', person: '.person', product: '#product', migration: '#migration', features: '#features', polymorphic: '#polymorphic', pricing: '#pricing', faq: '#faq', demo: '#demo' };
   const $ = selector => document.querySelector(selector);
   const storageKey = 'metalens-responsive-tester-v1';
   const siteUrl = new URL('../', location.href).href;

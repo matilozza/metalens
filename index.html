@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mako&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=24" />
+  <link rel="stylesheet" href="styles-b.css?v=17" />
   <script>
     /* unidad de escala: 1u = 1px del diseño 1440. Desktop crece con el ancho (siempre ocupa todo el ancho).
        Debajo de 1024 el layout compacto usa px reales (u = 1px). */
@@ -19,6 +19,9 @@
       function setU() {
         var w = r.clientWidth, h = window.innerHeight;
         var u = w >= 1024 ? w / 1440 : 1;   // solo el ancho manda: margen chico de borde a borde, como el diseño
+        /* arriba de 1440 (monitores grandes) se abre un margen lateral de a poco: en 1920 llega a ~190px por lado,
+           el mismo aire que tienen las cards de pricing; el contenido crece mucho menos y los fondos de color ya van a sangre (ver "Fondos a sangre" en el CSS) */
+        if (w > 1440) u = (w - 2 * .396 * (w - 1440)) / 1440;
         r.style.setProperty('--u', u + 'px');
       }
       setU();
@@ -149,6 +152,83 @@
           <p class="step__body">Review your site in Metalens and start working with your content.</p>
         </article>
       </div>
+    </div>
+  </section>
+
+  <!-- B1 · FEATURES (opción B) -->
+  <section class="feats" id="features" aria-labelledby="feats-title">
+    <div class="feats__intro">
+      <h2 class="display-80" id="feats-title">Built for the way<br />your team works</h2>
+      <p class="feats__lead label-supreme">Everything you need to edit, tailor and publish your site, in one place.</p>
+    </div>
+    <div class="feats__grid">
+      <article class="feat feat--lime" style="--d:0">
+        <div class="feat__head"><span class="feat__num">01</span><h3 class="feat__title">Assistant</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Get help writing, editing and organizing content, right where you work.</p>
+      </article>
+      <article class="feat feat--sky" style="--d:1">
+        <div class="feat__head"><span class="feat__num">02</span><h3 class="feat__title">Simulate</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Preview your site as each audience will see it, before anything goes live.</p>
+      </article>
+      <article class="feat feat--dark" style="--d:2">
+        <div class="feat__head"><span class="feat__num">03</span><h3 class="feat__title">Collections</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Shape your own content types: jobs, stories, events, people. Edit them once, use them everywhere.</p>
+      </article>
+      <article class="feat feat--lime" style="--d:3">
+        <div class="feat__head"><span class="feat__num">04</span><h3 class="feat__title">Forms</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Add forms to any page and keep every response in one place.</p>
+      </article>
+      <article class="feat feat--sky" style="--d:4">
+        <div class="feat__head"><span class="feat__num">05</span><h3 class="feat__title">Analytics</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">See how each page and audience performs, and what to improve next.</p>
+      </article>
+      <article class="feat feat--dark" style="--d:5">
+        <div class="feat__head"><span class="feat__num">06</span><h3 class="feat__title">User profiles</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Understand who is visiting and give each profile content that fits.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- B2 · POLYMORPHIC DESIGN -->
+  <section class="live" id="polymorphic" aria-labelledby="live-title">
+    <div class="live__surface">
+      <div class="live__intro">
+        <p class="label-mako">Polymorphic design</p>
+        <h2 class="display-80" id="live-title">Site that adapts<br />to each visitor</h2>
+        <p class="live__lead">Metalens is built on Polymorphic Design, a framework for adaptive experiences. Your team sets the rules. The site adapts to each person who visits.</p>
+      </div>
+      <article class="live__panel" data-cmp>
+        <header class="live__head">
+          <h3 class="live__name">One site, shaped for each person</h3>
+          <button class="live__playback" type="button" aria-label="Pause demo animation" aria-controls="visitor-preview" data-playing="true" hidden><span class="live__playback-icon" aria-hidden="true"></span><span class="live__playback-label">Pause</span></button>
+          <p class="live__description">Your team designs the standard page and decides what can change. Choose a visitor to see how the page adapts.</p>
+        </header>
+        <div class="aud__chips" role="tablist" aria-label="Visitor">
+          <button class="aud__chip is-on" id="visitor-candidate" role="tab" aria-selected="true" aria-controls="visitor-preview" tabindex="0" data-i="0">Candidate</button>
+          <button class="aud__chip" id="visitor-customer" role="tab" aria-selected="false" aria-controls="visitor-preview" tabindex="-1" data-i="1">Customer</button>
+          <button class="aud__chip" id="visitor-partner" role="tab" aria-selected="false" aria-controls="visitor-preview" tabindex="-1" data-i="2">Partner</button>
+        </div>
+        <div class="cmp is-adapted" id="visitor-preview" role="tabpanel" aria-labelledby="visitor-candidate" aria-live="off">
+          <div class="cmp__page cmp__page--std" aria-hidden="true">
+            <p class="cmp__tag">Standard</p>
+            <p class="cmp__title">Make every<br />visit count</p>
+            <p class="cmp__copy">A website that speaks to whoever arrives.</p>
+            <span class="cmp__cta">Explore</span>
+          </div>
+          <div class="cmp__page cmp__page--alt" aria-hidden="false">
+            <p class="cmp__tag"><span class="sw"><span style="--i:0">Came from a job post</span></span></p>
+            <p class="cmp__title"><span class="sw"><span style="--i:1">Find your</span></span><span class="sw"><span style="--i:2">next team</span></span></p>
+            <p class="cmp__copy"><span class="sw"><span style="--i:3">Open roles, real stories and how we work.</span></span></p>
+            <span class="cmp__cta"><span class="sw"><span style="--i:4">See open roles</span></span></span>
+          </div>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -283,6 +363,6 @@
   </footer>
 
 
-  <script src="animations.js?v=24"></script>
+  <script src="animations-b.js?v=12"></script>
 </body>
 </html>
