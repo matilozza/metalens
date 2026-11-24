@@ -7,8 +7,9 @@
 :root {
   --ink: #290d0d;        /* bordó casi negro */
   --wine: #2e0e13;       /* fondo footer */
-  --wine-2: #671f2a;     /* "Book a demo" / línea */
-  --rose: #ab3a4b;       /* labels footer */
+  --wine-2: #671f2a;     /* líneas decorativas */
+  --rose: #ab3a4b;
+  --rose-text: #c56978;  /* texto sobre el fondo oscuro */
   --sky: #c9dafe;        /* celeste */
   --sky-2: #9ab5ee;      /* líneas del form */
   --lime: #cbd56b;
@@ -58,10 +59,10 @@ section, header, footer { position: relative; width: calc(1440 * var(--u)); marg
 .hero__kicker { position: absolute; left: calc(84 * var(--u)); top: calc(393 * var(--u)); font: 400 calc(20 * var(--u))/calc(20 * var(--u)) var(--mako); letter-spacing: .02em; color: var(--snow); }
 
 .hero__title { font: 500 calc(166 * var(--u))/calc(171.5 * var(--u)) var(--display); text-transform: uppercase; }
-/* pantallas anchas y bajas (cine / ultra-wide): todo sigue a ancho completo, pero el hero mide como
-   máximo la altura de la pantalla y el bloque del titular sube lo que haga falta (sin márgenes laterales) */
+/* En pantallas anchas el titular sube, dejando al menos 31u bajo el nav.
+   En formatos muy bajos el hero puede superar el viewport para no recortar el texto. */
 @media (min-width: 1024px) {
-  .hero { --hshift: min(0px, calc(100vh - 740 * var(--u))); height: calc(740 * var(--u) + var(--hshift)); }
+  .hero { --hshift: clamp(calc(-220 * var(--u)), calc(100vh - 740 * var(--u)), 0px); height: calc(740 * var(--u) + var(--hshift)); }
   .hero__title { position: relative; top: var(--hshift); }
   .hero__sparkle { top: calc(350 * var(--u) + var(--hshift)); }
   .hero__kicker { top: calc(393 * var(--u) + var(--hshift)); }
@@ -182,10 +183,9 @@ section, header, footer { position: relative; width: calc(1440 * var(--u)); marg
 .price-card__name { font: 500 calc(20 * var(--u))/calc(20 * var(--u)) var(--sans); text-transform: uppercase; }
 .price-card--enterprise .price-card__name { letter-spacing: .02em; }
 .price-card__price {
-  margin-top: calc(16 * var(--u)); font: 500 calc(80 * var(--u))/1 var(--display); text-transform: uppercase;
+  margin-top: calc(16 * var(--u)); font: 500 calc(76 * var(--u))/1 var(--display); text-transform: uppercase;
   text-box-trim: trim-both; text-box-edge: cap alphabetic;
 }
-.price-card--enterprise .price-card__price { font-size: calc(70 * var(--u)); }
 .price-card__description {
   margin-top: calc(34 * var(--u)); font: 400 calc(22 * var(--u))/1.1 var(--sans); color: var(--text);
   text-box-trim: trim-both; text-box-edge: cap alphabetic;
@@ -231,7 +231,7 @@ section, header, footer { position: relative; width: calc(1440 * var(--u)); marg
 .demo { background: var(--ink); color: #fff; padding: calc(100 * var(--u)) var(--pad) calc(24 * var(--u)); }
 .demo__top { display: grid; grid-template-columns: calc(673 * var(--u)) calc(687 * var(--u)); gap: calc(32 * var(--u)); height: calc(411 * var(--u)); }
 .demo__left { position: relative; }
-.demo__title { margin-top: calc(-18 * var(--u)); width: calc(581 * var(--u)); font: 500 calc(166 * var(--u))/calc(140 * var(--u)) var(--display); text-transform: uppercase; color: var(--wine-2); }
+.demo__title { margin-top: calc(-18 * var(--u)); width: calc(581 * var(--u)); font: 500 calc(166 * var(--u))/calc(140 * var(--u)) var(--display); text-transform: uppercase; color: var(--rose-text); }
 .demo__note { position: absolute; left: 0; top: calc(339 * var(--u)); display: flex; gap: calc(93 * var(--u)); }
 .demo__note p { font: 500 calc(20 * var(--u))/calc(24 * var(--u)) var(--sans); letter-spacing: .02em; text-transform: uppercase; }
 
@@ -255,7 +255,7 @@ section, header, footer { position: relative; width: calc(1440 * var(--u)); marg
 .demo__rule { margin-top: calc(100 * var(--u)); border: 0; border-top: 1px solid var(--wine-2); }
 .cols { margin-top: calc(100 * var(--u)); display: flex; justify-content: space-between; }
 .col { width: calc(227 * var(--u)); display: flex; flex-direction: column; }
-.col__label { font: 500 calc(16 * var(--u))/calc(21 * var(--u)) var(--sans); letter-spacing: -.02em; text-transform: uppercase; color: var(--rose); }
+.col__label { font: 500 calc(16 * var(--u))/calc(21 * var(--u)) var(--sans); letter-spacing: -.02em; text-transform: uppercase; color: var(--rose-text); }
 .col a { font: 400 calc(20 * var(--u))/calc(23 * var(--u)) var(--sans); letter-spacing: -.02em; }
 .col__aerolab { padding-top: calc(3 * var(--u)); }
 .demo__logo { margin-top: calc(54 * var(--u)); width: calc(1392 * var(--u)); height: auto; }
