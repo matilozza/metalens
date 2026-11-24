@@ -212,7 +212,8 @@ section, header, footer { position: relative; width: calc(1440 * var(--u)); marg
 
 /* ───────────── 7 · FAQ ───────────── */
 .faq { min-height: calc(615 * var(--u)); padding: calc(100 * var(--u)) var(--pad); display: grid; grid-template-columns: calc(559 * var(--u)) calc(801 * var(--u)); gap: calc(32 * var(--u)); background: var(--paper); }
-.faq__left { display: flex; flex-direction: column; justify-content: space-between; }
+/* alto fijo: la última línea del label cae en la línea base de la pregunta 04 con todas cerradas, y no se mueve al abrirlas */
+.faq__left { display: flex; flex-direction: column; justify-content: space-between; align-self: start; height: calc(275.6 * var(--u)); }
 .faq__left .display-80 { margin-top: calc(-17 * var(--u)); }
 .qa { border-bottom: 1px solid var(--sky); padding: calc(30 * var(--u)) 0; }
 .qa:first-child { padding-top: 0; }
@@ -440,7 +441,7 @@ html, body { overflow-x: clip; }
 
   /* 7 · FAQ */
   .faq { height: auto; padding: 72px var(--pad); grid-template-columns: 1fr; gap: 48px; }
-  .faq__left { gap: 24px; justify-content: flex-start; }
+  .faq__left { gap: 24px; justify-content: flex-start; height: auto; }
   .faq__left .display-80 { margin-top: 0; }
   .qa { padding: 22px 0; }
   .qa[open] { padding-bottom: 22px; }
