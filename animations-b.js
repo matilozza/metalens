@@ -339,15 +339,10 @@
     const pinTop = parseFloat(getComputedStyle(productPin).top);
     return (pinTop - r.top) / (r.height - productPin.offsetHeight);       // 0 → 1 mientras está fijo
   }
-  // mientras la página se desplaza sola después de un clic, manda el clic: el scroll no repinta los steps
-  let clickLock = false, lockTimer = 0, clickTarget = null;
-  function unlock() { clickLock = false; clickTarget = null; clearTimeout(lockTimer); }
-  addEventListener('scrollend', () => {
-    if (clickLock && Math.abs(scrollY - clickTarget) < 2) unlock();
-  });
-  ['wheel', 'touchstart'].forEach(event => addEventListener(event, unlock, { passive: true }));
+  // Durante el desplazamiento hacia una pestaña, se mantiene la selección del clic.
+  let lockProductStep = false;
   function stepFromScroll() {
-    if (clickLock) return;
+    if (lockProductStep) return;
     if (product.offsetHeight <= productPin.offsetHeight + 1) return;          // sin pista (menos movimiento): manda el clic
     const p = productProgress();
     setStep(p < 0.33 ? 0 : p < 0.66 ? 1 : 2);
@@ -359,13 +354,7 @@
     const pinTop = parseFloat(getComputedStyle(productPin).top);
     const track = r.height - productPin.offsetHeight;
     const target = scrollY + r.top - pinTop + track * (i * 0.33 + 0.16);
-    if (track > 1) {
-      clickLock = true;
-      clickTarget = target;
-      clearTimeout(lockTimer);
-      lockTimer = setTimeout(() => { unlock(); stepFromScroll(); }, 1500);
-      scrollTo({ top: target, behavior: reduce ? 'auto' : 'smooth' });
-    }
+    if (track > 1) glideTo(target, stepFromScroll, true);
   }));
   ptabs.forEach((tab, index) => tab.addEventListener('keydown', event => {
     let next;
@@ -387,23 +376,36 @@
   addEventListener('resize', onScroll);
   onScroll();
 
-  /* ── Links internos: desplazamiento suave en vez de salto ──
+  /* ── Desplazamiento suave para links internos y pestañas ──
      Duración según la distancia; se cancela si la persona mueve la rueda o toca la pantalla. */
   const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   let glide = 0;
-  function cancelGlide() { cancelAnimationFrame(glide); glide = 0; }
-  ['wheel', 'touchstart', 'keydown'].forEach(ev => addEventListener(ev, cancelGlide, { passive: true }));
-  function glideTo(y, done) {
+  function cancelGlide() {
+    cancelAnimationFrame(glide);
+    glide = 0;
+    lockProductStep = false;
+  }
+  ['wheel', 'touchstart'].forEach(ev => addEventListener(ev, cancelGlide, { passive: true }));
+  addEventListener('keydown', event => {
+    if (!event.defaultPrevented) cancelGlide();
+  });
+  function glideTo(y, done, keepProductStep = false) {
     cancelGlide();
+    lockProductStep = keepProductStep;
     const from = scrollY, dist = y - from;
-    if (reduce || Math.abs(dist) < 2) { scrollTo(0, y); done && done(); return; }
+    const finish = () => {
+      glide = 0;
+      lockProductStep = false;
+      done?.();
+    };
+    if (reduce || Math.abs(dist) < 2) { scrollTo(0, y); finish(); return; }
     const dur = Math.min(1600, Math.max(600, 450 + Math.abs(dist) * 0.12));
     const t0 = performance.now();
     const step = now => {
       const t = Math.min(1, (now - t0) / dur);
       scrollTo(0, from + dist * easeInOut(t));
       if (t < 1) glide = requestAnimationFrame(step);
-      else { glide = 0; done && done(); }
+      else finish();
     };
     glide = requestAnimationFrame(step);
   }
@@ -414,6 +416,10 @@
     ev.preventDefault();
     const y = id ? target.getBoundingClientRect().top + scrollY : 0;
     glideTo(y, () => {
+      if (id) {
+        const top = target.getBoundingClientRect().top;
+        if (Math.abs(top) > 1) scrollTo(0, scrollY + top);
+      }
       history.replaceState(null, '', id ? '#' + id : location.pathname + location.search);
       if (id) { target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }
     });
