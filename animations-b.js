@@ -5,7 +5,6 @@
   const $  = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-  const easeOut = t => 1 - Math.pow(1 - t, 3);
 
   document.documentElement.classList.add('js');
   if (reduce) document.documentElement.classList.add('reduce');
@@ -231,8 +230,6 @@
   });
 
   /* ── 4. Animaciones ligadas al scroll ── */
-  const editor = $('.product__editor');
-  const stage  = $('.product__stage');
   const steps  = $('.steps');
   const pin    = $('.steps__pin');
   const cards  = $$('.step');
@@ -262,14 +259,6 @@
 
     if (reduce) return;
 
-    // editor: sube y crece
-    {
-      const r = stage.getBoundingClientRect();
-      const e = easeOut(clamp((vh - r.top) / (vh * 0.85)));
-      const u = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--u')) || 1;
-      editor.style.transform = `translate3d(0, ${(1 - e) * 160 * u}px, 0) scale(${0.9 + 0.1 * e})`;
-    }
-
     // pasos: la zona queda fija y las cards se disparan de a una; cada una se apoya sobre la anterior
     {
       const r = steps.getBoundingClientRect();
@@ -286,6 +275,41 @@
   const product = $('.product');
   const productPin = $('.product__pin');
   const ptabs = $$('.ptab');
+  const demoStage = $('.product__stage');
+  const demoLoop = $('.product__loop');
+  const demoVideo = $('.product__video');
+  const demoMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let demoVisible = !('IntersectionObserver' in window);
+  let wantsPlayback = !demoMotion.matches;
+
+  function syncDemo() {
+    if (demoVisible && wantsPlayback) demoVideo.play().catch(() => {});
+    else demoVideo.pause();
+  }
+
+  demoLoop.addEventListener('click', () => {
+    wantsPlayback = demoVideo.paused;
+    syncDemo();
+  });
+  function updateDemoState() {
+    demoLoop.setAttribute('aria-pressed', String(!demoVideo.paused));
+  }
+  demoVideo.addEventListener('play', updateDemoState);
+  demoVideo.addEventListener('pause', updateDemoState);
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      const visible = entry.isIntersecting && entry.intersectionRatio >= 0.45;
+      if (visible === demoVisible) return;
+      demoVisible = visible;
+      syncDemo();
+    }, { threshold: 0.45 }).observe(demoStage);
+  }
+  demoMotion.addEventListener('change', () => {
+    wantsPlayback = !demoMotion.matches;
+    syncDemo();
+  });
+
   let current = -1;
   function setStep(n) {
     if (n === current) return;
@@ -298,6 +322,17 @@
       t.setAttribute('aria-selected', i === n);
       t.tabIndex = i === n ? 0 : -1;
     });
+    const tab = ptabs[n];
+    const src = `assets/demos/${tab.dataset.demo}.mp4?v=7`;
+    demoStage.setAttribute('aria-labelledby', tab.id);
+    demoLoop.setAttribute('aria-label', `Play or pause. ${tab.dataset.description}`);
+    if (demoVideo.getAttribute('src') !== src) {
+      demoVideo.pause();
+      demoVideo.poster = `assets/demos/${tab.dataset.demo}.jpg?v=6`;
+      demoVideo.src = src;
+      wantsPlayback = !demoMotion.matches;
+    }
+    syncDemo();
   }
   function productProgress() {
     const r = product.getBoundingClientRect();
