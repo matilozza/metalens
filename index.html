@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mako&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=23" />
+  <link rel="stylesheet" href="styles-b.css?v=22" />
   <script>
     /* unidad de escala: 1u = 1px del diseño 1440. Desktop crece con el ancho (siempre ocupa todo el ancho).
        Debajo de 1024 el layout compacto usa px reales (u = 1px). */
@@ -19,6 +19,9 @@
       function setU() {
         var w = r.clientWidth, h = window.innerHeight;
         var u = w >= 1024 ? w / 1440 : 1;   // solo el ancho manda: margen chico de borde a borde, como el diseño
+        /* arriba de 1440 (monitores grandes) se abre un margen lateral de a poco: en 1920 llega a ~190px por lado,
+           el mismo aire que tienen las cards de pricing; el contenido crece mucho menos y los fondos de color ya van a sangre (ver "Fondos a sangre" en el CSS) */
+        if (w > 1440) u = (w - 2 * .396 * (w - 1440)) / 1440;
         r.style.setProperty('--u', u + 'px');
       }
       setU();
@@ -103,23 +106,30 @@
   <!-- 4 · PRODUCT -->
   <section class="product" id="product">
     <div class="product__pin">
-      <div class="product__stage">
-        <img class="product__editor" src="assets/editor@2x.png" alt="Metalens editor" width="1306" height="713" />
+      <div class="product__stage" id="product-demo" role="tabpanel" aria-labelledby="demo-edit">
+        <button class="product__loop" type="button" aria-pressed="false"
+          aria-label="Play or pause. Live editing demo: change the headline and description directly on the page.">
+          <video class="product__video" src="assets/demos/edicion.mp4?v=7" poster="assets/demos/edicion.jpg?v=6"
+            width="3840" height="2160" muted playsinline loop preload="none" aria-hidden="true"></video>
+        </button>
       </div>
-      <div class="product__tabs" role="tablist">
-        <button class="ptab ptab--lime is-on" role="tab" data-step="0">
+      <div class="product__tabs" role="tablist" aria-label="Product features">
+        <button class="ptab ptab--lime is-on" type="button" role="tab" id="demo-edit" aria-selected="true" aria-controls="product-demo" data-step="0"
+          data-demo="edicion" data-description="Live editing demo: change the headline and description directly on the page.">
           <span class="ptab__num">01</span>
-          <span class="ptab__txt">Move Forward. <br />Stay In Control.</span>
+          <span class="ptab__txt">Edit text live.</span>
           <i class="ptab__dot"></i>
         </button>
-        <button class="ptab ptab--sky" role="tab" data-step="1">
+        <button class="ptab ptab--sky" type="button" role="tab" id="demo-audience" aria-selected="false" aria-controls="product-demo" tabindex="-1" data-step="1"
+          data-demo="audiencias" data-description="Audience demo: switch from Everyone to Builder and Buyer to see different headlines.">
           <span class="ptab__num">02</span>
           <span class="ptab__txt">One Site. <br />Different Audiences.</span>
           <i class="ptab__dot"></i>
         </button>
-        <button class="ptab ptab--dark" role="tab" data-step="2">
+        <button class="ptab ptab--dark" type="button" role="tab" id="demo-analytics" aria-selected="false" aria-controls="product-demo" tabindex="-1" data-step="2"
+          data-demo="analiticas" data-description="Analytics demo: switch date ranges, inspect the visits chart and scroll to the most-read pages.">
           <span class="ptab__num">03</span>
-          <span class="ptab__txt">See It, <br />Change It.</span>
+          <span class="ptab__txt">Explore your analytics.</span>
           <i class="ptab__dot"></i>
         </button>
       </div>
@@ -149,6 +159,83 @@
           <p class="step__body">Review your site in Metalens and start working with your content.</p>
         </article>
       </div>
+    </div>
+  </section>
+
+  <!-- B1 · FEATURES (opción B) -->
+  <section class="feats" id="features" aria-labelledby="feats-title">
+    <div class="feats__intro">
+      <h2 class="display-80" id="feats-title">Built for the way<br />your team works</h2>
+      <p class="feats__lead label-supreme">Everything you need to edit, tailor and publish your site, in one place.</p>
+    </div>
+    <div class="feats__grid">
+      <article class="feat feat--lime" style="--d:0">
+        <div class="feat__head"><span class="feat__num">01</span><h3 class="feat__title">Assistant</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Get help writing, editing and organizing content, right where you work.</p>
+      </article>
+      <article class="feat feat--sky" style="--d:1">
+        <div class="feat__head"><span class="feat__num">02</span><h3 class="feat__title">Simulate</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Preview your site as each audience will see it, before anything goes live.</p>
+      </article>
+      <article class="feat feat--dark" style="--d:2">
+        <div class="feat__head"><span class="feat__num">03</span><h3 class="feat__title">Collections</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Shape your own content types: jobs, stories, events, people. Edit them once, use them everywhere.</p>
+      </article>
+      <article class="feat feat--lime" style="--d:3">
+        <div class="feat__head"><span class="feat__num">04</span><h3 class="feat__title">Forms</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Add forms to any page and keep every response in one place.</p>
+      </article>
+      <article class="feat feat--sky" style="--d:4">
+        <div class="feat__head"><span class="feat__num">05</span><h3 class="feat__title">Analytics</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">See how each page and audience performs, and what to improve next.</p>
+      </article>
+      <article class="feat feat--dark" style="--d:5">
+        <div class="feat__head"><span class="feat__num">06</span><h3 class="feat__title">User profiles</h3></div>
+        <i class="feat__dot"></i>
+        <p class="feat__body">Understand who is visiting and give each profile content that fits.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- B2 · POLYMORPHIC DESIGN -->
+  <section class="live" id="polymorphic" aria-labelledby="live-title">
+    <div class="live__surface">
+      <div class="live__intro">
+        <p class="label-mako">Polymorphic design</p>
+        <h2 class="display-80" id="live-title">Site that adapts<br />to each visitor</h2>
+        <p class="live__lead">Metalens is built on Polymorphic Design, a framework for adaptive experiences. Your team sets the rules. The site adapts to each person who visits.</p>
+      </div>
+      <article class="live__panel" data-cmp>
+        <header class="live__head">
+          <h3 class="live__name">One site, shaped for each person</h3>
+          <button class="live__playback" type="button" aria-label="Pause demo animation" aria-controls="visitor-preview" data-playing="true" hidden><span class="live__playback-icon" aria-hidden="true"></span><span class="live__playback-label">Pause</span></button>
+          <p class="live__description">Your team designs the standard page and decides what can change. Choose a visitor to see how the page adapts.</p>
+        </header>
+        <div class="aud__chips" role="tablist" aria-label="Visitor">
+          <button class="aud__chip is-on" id="visitor-candidate" role="tab" aria-selected="true" aria-controls="visitor-preview" tabindex="0" data-i="0">Candidate</button>
+          <button class="aud__chip" id="visitor-customer" role="tab" aria-selected="false" aria-controls="visitor-preview" tabindex="-1" data-i="1">Customer</button>
+          <button class="aud__chip" id="visitor-partner" role="tab" aria-selected="false" aria-controls="visitor-preview" tabindex="-1" data-i="2">Partner</button>
+        </div>
+        <div class="cmp is-adapted" id="visitor-preview" role="tabpanel" aria-labelledby="visitor-candidate" aria-live="off">
+          <div class="cmp__page cmp__page--std" aria-hidden="true">
+            <p class="cmp__tag">Standard</p>
+            <p class="cmp__title">Make every<br />visit count</p>
+            <p class="cmp__copy">A website that speaks to whoever arrives.</p>
+            <span class="cmp__cta">Explore</span>
+          </div>
+          <div class="cmp__page cmp__page--alt" aria-hidden="false">
+            <p class="cmp__tag"><span class="sw"><span style="--i:0">Came from a job post</span></span></p>
+            <p class="cmp__title"><span class="sw"><span style="--i:1">Find your</span></span><span class="sw"><span style="--i:2">next team</span></span></p>
+            <p class="cmp__copy"><span class="sw"><span style="--i:3">Open roles, real stories and how we work.</span></span></p>
+            <span class="cmp__cta"><span class="sw"><span style="--i:4">See open roles</span></span></span>
+          </div>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -236,10 +323,10 @@
       </div>
       <form class="form" onsubmit="event.preventDefault()">
         <p class="form__title">Every site starts with a conversation.</p>
-        <label class="field"><i></i><input type="text" name="name" placeholder="Name" /></label>
-        <label class="field"><i></i><input type="email" name="email" placeholder="Work email" /></label>
-        <label class="field"><i></i><input type="url" name="website" placeholder="Company website" /></label>
-        <label class="field field--opt"><i></i><input type="text" name="message" placeholder="Message" /><small>(optional)</small></label>
+        <label class="field"><i></i><input type="text" name="name" placeholder="Name" aria-label="Name" autocomplete="name" /></label>
+        <label class="field"><i></i><input type="email" name="email" placeholder="Work email" aria-label="Work email" autocomplete="email" /></label>
+        <label class="field"><i></i><input type="url" name="website" placeholder="Company website" aria-label="Company website" autocomplete="url" /></label>
+        <label class="field field--opt"><i></i><input type="text" name="message" placeholder="Message" aria-label="Message (optional)" /><small>(optional)</small></label>
         <button type="submit" class="btn btn--dark">Get in touch</button>
       </form>
     </div>
@@ -283,6 +370,6 @@
   </footer>
 
 
-  <script src="animations.js?v=23"></script>
+  <script src="animations-b.js?v=22"></script>
 </body>
 </html>

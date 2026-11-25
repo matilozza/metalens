@@ -5,7 +5,6 @@
   const $  = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-  const easeOut = t => 1 - Math.pow(1 - t, 3);
 
   document.documentElement.classList.add('js');
   if (reduce) document.documentElement.classList.add('reduce');
@@ -110,21 +109,7 @@
   let splitTimer;
   addEventListener('resize', () => { clearTimeout(splitTimer); splitTimer = setTimeout(splitMenuLines, 150); });
 
-  /* ── B2 · Polymorphic (opción B) ──
-     01: la misma página, adaptada a cada persona; un divisor la compara con la estándar.
-     (la card 02 de señales se sacó: era mucha información) */
-  const swap = (page, texts) => {
-    const slots = $$('.sw > span', page);
-    if (reduce) { texts.forEach((t, k) => (slots[k].textContent = t)); return; }
-    page.classList.add('is-out');
-    setTimeout(() => {
-      texts.forEach((t, k) => (slots[k].textContent = t));
-      page.classList.remove('is-out'); page.classList.add('is-pre');
-      void page.offsetWidth;   // fija la posición de abajo antes de volver a animar
-      page.classList.remove('is-pre');
-    }, 420);
-  };
-
+  /* ── B2 · Una página que se transforma según el visitante ── */
   const cmpPanel = $('[data-cmp]');
   if (cmpPanel) {
     const PERSONAS = [
@@ -132,61 +117,87 @@
       ['Came back to pricing twice', 'Get answers,', 'fast', 'Plans, guides and a direct line to our team.', 'Talk to us'],
       ['Arrived from a partner link', 'Build it', 'together', 'Programs, docs and a team that answers.', 'Become a partner']
     ];
-    const NAMES = ['Candidate', 'Customer', 'Partner'];
-    const cmp = $('.cmp', cmpPanel), alt = $('.cmp__page--alt', cmp), handle = $('.cmp__handle', cmp);
-    const chips = $$('.aud__chip', cmpPanel);
-    let cur = 0, touched = false, timer = null, visible = false, hinted = false, lastDrag = 0;
-    const setX = v => {
-      v = clamp(v, 4, 96);
-      cmp.style.setProperty('--x', v + '%');
-      handle.setAttribute('aria-valuenow', String(Math.round(v)));
+    const cmp = $('.cmp', cmpPanel), standard = $('.cmp__page--std', cmp), alt = $('.cmp__page--alt', cmp);
+    const slots = $$('.sw > span', alt), chips = $$('.aud__chip', cmpPanel);
+    const playback = $('.live__playback', cmpPanel), playbackLabel = $('.live__playback-label', playback);
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    let cur = 0, playing = !motion.matches, visible = false, timers = [];
+
+    const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+    const later = (fn, ms) => { timers.push(setTimeout(fn, ms)); };
+    const syncPlayback = () => {
+      playback.dataset.playing = String(playing);
+      playbackLabel.textContent = playing ? 'Pause' : 'Play';
+      playback.setAttribute('aria-label', playing ? 'Pause demo animation' : 'Play demo animation');
+      playback.hidden = motion.matches;
     };
-    const pick = (i, byUser) => {
-      if (i === cur) return;
+    const select = i => {
       cur = i;
-      chips.forEach((c, k) => { c.classList.toggle('is-on', k === i); c.setAttribute('aria-selected', String(k === i)); });
-      swap(alt, PERSONAS[i]);
+      chips.forEach((chip, k) => {
+        chip.classList.toggle('is-on', k === i);
+        chip.setAttribute('aria-selected', String(k === i));
+        chip.tabIndex = k === i ? 0 : -1;
+      });
+      cmp.setAttribute('aria-labelledby', chips[i].id);
     };
-    chips.forEach((c, k) => c.addEventListener('click', () => { touched = true; pick(k, true); }));
-
-    let dragging = false;
-    const fromEvent = e => { const r = cmp.getBoundingClientRect(); setX((e.clientX - r.left) / r.width * 100); };
-    cmp.addEventListener('pointerdown', e => { dragging = touched = true; cmp.setPointerCapture(e.pointerId); fromEvent(e); });
-    cmp.addEventListener('pointermove', e => { if (dragging) fromEvent(e); });
-    const end = () => {
-      if (!dragging) return;
-      dragging = false;
+    const writePersona = () => PERSONAS[cur].forEach((text, k) => { slots[k].textContent = text; });
+    const showAdapted = adapted => {
+      cmp.classList.toggle('is-adapted', adapted);
+      standard.setAttribute('aria-hidden', String(adapted));
+      alt.setAttribute('aria-hidden', String(!adapted));
     };
-    cmp.addEventListener('pointerup', end);
-    cmp.addEventListener('pointercancel', end);
-    handle.addEventListener('keydown', e => {
-      const now = parseFloat(cmp.style.getPropertyValue('--x')) || 50;
-      const step = { ArrowLeft: -5, ArrowRight: 5, Home: -100, End: 100 }[e.key];
-      if (step === undefined) return;
-      e.preventDefault(); touched = true; setX(now + step);
+    const settle = () => {
+      clearTimers();
+      cmp.classList.add('is-instant');
+      writePersona(); showAdapted(true);
+      cmp.setAttribute('aria-busy', 'false');
+    };
+    const canPlay = () => playing && visible && !document.hidden && !motion.matches;
+    const run = (i, instant = false) => {
+      clearTimers(); select(i);
+      if (instant || motion.matches) { settle(); return; }
+      cmp.classList.remove('is-instant');
+      cmp.setAttribute('aria-busy', 'true');
+      showAdapted(false);
+      // La página estándar se lee un momento antes de transformarse.
+      later(writePersona, 420);
+      later(() => { showAdapted(true); cmp.setAttribute('aria-busy', 'false'); }, 1000);
+      later(() => { if (canPlay()) run((cur + 1) % PERSONAS.length); }, 6200);
+    };
+    const pause = () => { playing = false; syncPlayback(); settle(); };
+    const choose = (i, instant) => {
+      playing = false; syncPlayback();
+      cmp.setAttribute('aria-live', 'polite');
+      run(i, instant);
+    };
+    chips.forEach((chip, k) => {
+      chip.addEventListener('click', e => choose(k, e.detail === 0));
+      chip.addEventListener('keydown', e => {
+        const next = { ArrowLeft: (k + chips.length - 1) % chips.length, ArrowRight: (k + 1) % chips.length, Home: 0, End: chips.length - 1 }[e.key];
+        if (next === undefined) return;
+        e.preventDefault(); choose(next, true); chips[next].focus();
+      });
+      chip.addEventListener('focus', () => { if (playing) pause(); });
     });
-
-    // al aparecer por primera vez, el divisor se corre solo hasta el medio para mostrar que se arrastra;
-    // mientras nadie toque nada, las personas van rotando
-    const hint = () => {
-      if (hinted || touched || reduce) return;
-      hinted = true;
-      const t0 = performance.now(), from = 86, to = 50;
-      const step = now => {
-        const t = clamp((now - t0) / 1300);
-        if (touched) return;
-        setX(from + (to - from) * easeOut(t));
-        if (t < 1) requestAnimationFrame(step);
-      };
-      setX(from); requestAnimationFrame(step);
+    playback.addEventListener('click', () => {
+      if (playing) { pause(); return; }
+      playing = true; syncPlayback(); cmp.setAttribute('aria-live', 'off');
+      if (canPlay()) run(cur);
+    });
+    const syncVisibility = () => {
+      if (canPlay()) run(cur);
+      else settle();
     };
-    new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting;
-      clearInterval(timer);
-      if (!visible) return;
-      hint();
-      if (!reduce) timer = setInterval(() => { if (!touched && visible) pick((cur + 1) % PERSONAS.length); }, 4500);
-    }, { threshold: .4 }).observe(cmp);
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting && entry.intersectionRatio >= .25;
+      syncVisibility();
+    }, { threshold: .25 }).observe(cmp);
+    document.addEventListener('visibilitychange', syncVisibility);
+    motion.addEventListener('change', () => {
+      if (motion.matches) playing = false;
+      syncPlayback(); settle();
+    });
+    syncPlayback();
   }
 
   /* ── 2. Intro: palabras que se encienden con el scroll ── */
@@ -219,8 +230,6 @@
   });
 
   /* ── 4. Animaciones ligadas al scroll ── */
-  const editor = $('.product__editor');
-  const stage  = $('.product__stage');
   const steps  = $('.steps');
   const pin    = $('.steps__pin');
   const cards  = $$('.step');
@@ -250,20 +259,12 @@
 
     if (reduce) return;
 
-    // editor: sube y crece
-    {
-      const r = stage.getBoundingClientRect();
-      const e = easeOut(clamp((vh - r.top) / (vh * 0.85)));
-      const u = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--u')) || 1;
-      editor.style.transform = `translate3d(0, ${(1 - e) * 160 * u}px, 0) scale(${0.9 + 0.1 * e})`;
-    }
-
     // pasos: la zona queda fija y las cards se disparan de a una; cada una se apoya sobre la anterior
     {
       const r = steps.getBoundingClientRect();
       const pinTop = parseFloat(getComputedStyle(pin).top);
       const track = r.height - pin.offsetHeight;    // recorrido de scroll disponible
-      const p = (pinTop - r.top) / track;           // 0 → 1 mientras está fija (negativo antes)
+      const p = track > 1 ? (pinTop - r.top) / track : 1; // sin pista: las tarjetas quedan en el flujo
       // disparadores: al pasar cada umbral la card entra sola y completa (CSS); al volver a subir, sale
       const triggers = [-0.3, 0.2, 0.55];             // 01 al llegar, 02 y 03 mientras la zona está fija
       cards.forEach((c, i) => c.classList.toggle('is-in', p > triggers[i]));
@@ -274,6 +275,41 @@
   const product = $('.product');
   const productPin = $('.product__pin');
   const ptabs = $$('.ptab');
+  const demoStage = $('.product__stage');
+  const demoLoop = $('.product__loop');
+  const demoVideo = $('.product__video');
+  const demoMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let demoVisible = !('IntersectionObserver' in window);
+  let wantsPlayback = !demoMotion.matches;
+
+  function syncDemo() {
+    if (demoVisible && wantsPlayback) demoVideo.play().catch(() => {});
+    else demoVideo.pause();
+  }
+
+  demoLoop.addEventListener('click', () => {
+    wantsPlayback = demoVideo.paused;
+    syncDemo();
+  });
+  function updateDemoState() {
+    demoLoop.setAttribute('aria-pressed', String(!demoVideo.paused));
+  }
+  demoVideo.addEventListener('play', updateDemoState);
+  demoVideo.addEventListener('pause', updateDemoState);
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      const visible = entry.isIntersecting && entry.intersectionRatio >= 0.45;
+      if (visible === demoVisible) return;
+      demoVisible = visible;
+      syncDemo();
+    }, { threshold: 0.45 }).observe(demoStage);
+  }
+  demoMotion.addEventListener('change', () => {
+    wantsPlayback = !demoMotion.matches;
+    syncDemo();
+  });
+
   let current = -1;
   function setStep(n) {
     if (n === current) return;
@@ -284,18 +320,29 @@
       t.classList.remove('is-new');
       if (on && !was) { void t.offsetWidth; t.classList.add('is-new'); }   // el que recién se pinta: su texto sube
       t.setAttribute('aria-selected', i === n);
+      t.tabIndex = i === n ? 0 : -1;
     });
+    const tab = ptabs[n];
+    const src = `assets/demos/${tab.dataset.demo}.mp4?v=7`;
+    demoStage.setAttribute('aria-labelledby', tab.id);
+    demoLoop.setAttribute('aria-label', `Play or pause. ${tab.dataset.description}`);
+    if (demoVideo.getAttribute('src') !== src) {
+      demoVideo.pause();
+      demoVideo.poster = `assets/demos/${tab.dataset.demo}.jpg?v=6`;
+      demoVideo.src = src;
+      wantsPlayback = !demoMotion.matches;
+    }
+    syncDemo();
   }
   function productProgress() {
     const r = product.getBoundingClientRect();
     const pinTop = parseFloat(getComputedStyle(productPin).top);
     return (pinTop - r.top) / (r.height - productPin.offsetHeight);       // 0 → 1 mientras está fijo
   }
-  // mientras la página se desplaza sola después de un clic, manda el clic: el scroll no repinta los steps
-  let clickLock = false, lockTimer = 0;
-  function unlock() { clickLock = false; clearTimeout(lockTimer); }
+  // Durante el desplazamiento hacia una pestaña, se mantiene la selección del clic.
+  let lockProductStep = false;
   function stepFromScroll() {
-    if (clickLock) return;
+    if (lockProductStep) return;
     if (product.offsetHeight <= productPin.offsetHeight + 1) return;          // sin pista (menos movimiento): manda el clic
     const p = productProgress();
     setStep(p < 0.33 ? 0 : p < 0.66 ? 1 : 2);
@@ -307,13 +354,18 @@
     const pinTop = parseFloat(getComputedStyle(productPin).top);
     const track = r.height - productPin.offsetHeight;
     const target = scrollY + r.top - pinTop + track * (i * 0.33 + 0.16);
-    if (track > 1) {
-      clickLock = true;
-      clearTimeout(lockTimer);
-      addEventListener('scrollend', unlock, { once: true });
-      lockTimer = setTimeout(unlock, 1500);          // por si el navegador no avisa el fin del scroll
-      scrollTo({ top: target, behavior: reduce ? 'auto' : 'smooth' });
-    }
+    if (track > 1) glideTo(target, stepFromScroll, true);
+  }));
+  ptabs.forEach((tab, index) => tab.addEventListener('keydown', event => {
+    let next;
+    if (event.key === 'ArrowRight' || (mobileTitles.matches && event.key === 'ArrowDown')) next = (index + 1) % ptabs.length;
+    else if (event.key === 'ArrowLeft' || (mobileTitles.matches && event.key === 'ArrowUp')) next = (index + ptabs.length - 1) % ptabs.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = ptabs.length - 1;
+    else return;
+    event.preventDefault();
+    ptabs[next].focus({ preventScroll: true });
+    ptabs[next].click();
   }));
 
 
@@ -324,23 +376,36 @@
   addEventListener('resize', onScroll);
   onScroll();
 
-  /* ── Links internos: desplazamiento suave en vez de salto ──
+  /* ── Desplazamiento suave para links internos y pestañas ──
      Duración según la distancia; se cancela si la persona mueve la rueda o toca la pantalla. */
   const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   let glide = 0;
-  function cancelGlide() { cancelAnimationFrame(glide); glide = 0; }
-  ['wheel', 'touchstart', 'keydown'].forEach(ev => addEventListener(ev, cancelGlide, { passive: true }));
-  function glideTo(y, done) {
+  function cancelGlide() {
+    cancelAnimationFrame(glide);
+    glide = 0;
+    lockProductStep = false;
+  }
+  ['wheel', 'touchstart'].forEach(ev => addEventListener(ev, cancelGlide, { passive: true }));
+  addEventListener('keydown', event => {
+    if (!event.defaultPrevented) cancelGlide();
+  });
+  function glideTo(y, done, keepProductStep = false) {
     cancelGlide();
+    lockProductStep = keepProductStep;
     const from = scrollY, dist = y - from;
-    if (reduce || Math.abs(dist) < 2) { scrollTo(0, y); done && done(); return; }
+    const finish = () => {
+      glide = 0;
+      lockProductStep = false;
+      done?.();
+    };
+    if (reduce || Math.abs(dist) < 2) { scrollTo(0, y); finish(); return; }
     const dur = Math.min(1600, Math.max(600, 450 + Math.abs(dist) * 0.12));
     const t0 = performance.now();
     const step = now => {
       const t = Math.min(1, (now - t0) / dur);
       scrollTo(0, from + dist * easeInOut(t));
       if (t < 1) glide = requestAnimationFrame(step);
-      else { glide = 0; done && done(); }
+      else finish();
     };
     glide = requestAnimationFrame(step);
   }
@@ -351,6 +416,10 @@
     ev.preventDefault();
     const y = id ? target.getBoundingClientRect().top + scrollY : 0;
     glideTo(y, () => {
+      if (id) {
+        const top = target.getBoundingClientRect().top;
+        if (Math.abs(top) > 1) scrollTo(0, scrollY + top);
+      }
       history.replaceState(null, '', id ? '#' + id : location.pathname + location.search);
       if (id) { target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }
     });
@@ -359,15 +428,27 @@
   /* ── 5. FAQ: abrir/cerrar con altura suave, uno por vez ── */
   const items = $$('.qa');
   const DUR = reduce ? 0 : 420, EASE = 'cubic-bezier(.2,.7,.1,1)';
+  const faqAnimations = new WeakMap();
 
   function animateHeight(d, open) {
     const from = d.offsetHeight;
+    const previous = faqAnimations.get(d);
+    if (previous) {
+      previous.onfinish = null;
+      previous.cancel();
+    }
     if (open) d.open = true;
     d.classList.toggle('is-open', open);
     const to = open ? d.offsetHeight : closedHeight(d);
     const a = d.animate([{ height: from + 'px' }, { height: to + 'px' }], { duration: DUR, easing: EASE });
+    faqAnimations.set(d, a);
     d.style.overflow = 'hidden';
-    a.onfinish = () => { if (!open) d.open = false; d.style.overflow = ''; };
+    a.onfinish = () => {
+      if (faqAnimations.get(d) !== a) return;
+      if (!open) d.open = false;
+      d.style.overflow = '';
+      faqAnimations.delete(d);
+    };
   }
   function closedHeight(d) {
     const was = d.open, cls = d.classList.contains('is-open');
