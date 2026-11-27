@@ -7,9 +7,8 @@
 :root {
   --ink: #290d0d;        /* bordó casi negro */
   --wine: #2e0e13;       /* fondo footer */
-  --wine-2: #671f2a;     /* líneas decorativas */
-  --rose: #ab3a4b;
-  --rose-text: #c56978;  /* texto sobre el fondo oscuro */
+  --wine-2: #671f2a;     /* "Book a demo" / línea */
+  --rose: #ab3a4b;       /* labels footer */
   --sky: #c9dafe;        /* celeste */
   --sky-2: #9ab5ee;      /* líneas del form */
   --lime: #cbd56b;
