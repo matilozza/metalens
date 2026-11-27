@@ -109,93 +109,186 @@
   let splitTimer;
   addEventListener('resize', () => { clearTimeout(splitTimer); splitTimer = setTimeout(splitMenuLines, 150); });
 
-  /* ── B2 · Una página que se transforma según el visitante ── */
+  /* ── B2 · Las tres experiencias de Polymorphic Design ── */
   const cmpPanel = $('[data-cmp]');
   if (cmpPanel) {
-    const PERSONAS = [
-      ['Came from a job post', 'Find your', 'next team', 'Open roles, real stories and how we work.', 'See open roles'],
-      ['Came back to pricing twice', 'Get answers,', 'fast', 'Plans, guides and a direct line to our team.', 'Talk to us'],
-      ['Arrived from a partner link', 'Build it', 'together', 'Programs, docs and a team that answers.', 'Become a partner']
-    ];
-    const cmp = $('.cmp', cmpPanel), standard = $('.cmp__page--std', cmp), alt = $('.cmp__page--alt', cmp);
-    const slots = $$('.sw > span', alt), chips = $$('.aud__chip', cmpPanel);
+    const cmp = $('.cmp', cmpPanel), chips = $$('.aud__chip', cmpPanel), previews = $$('.poly-demo', cmp);
+    const options = $$('.aud__option', cmpPanel), descriptions = $$('.aud__description', cmpPanel);
     const playback = $('.live__playback', cmpPanel), playbackLabel = $('.live__playback-label', playback);
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
-    let cur = 0, playing = !motion.matches, visible = false, timers = [];
-
-    const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
-    const later = (fn, ms) => { timers.push(setTimeout(fn, ms)); };
+    let cur = Math.max(0, chips.findIndex(chip => chip.classList.contains('is-on'))), playing = !motion.matches, visible = false, timer;
+    const stopTimer = () => clearTimeout(timer);
+    const canPlay = () => playing && visible && !document.hidden && !motion.matches;
     const syncPlayback = () => {
       playback.dataset.playing = String(playing);
       playbackLabel.textContent = playing ? 'Pause' : 'Play';
       playback.setAttribute('aria-label', playing ? 'Pause demo animation' : 'Play demo animation');
       playback.hidden = motion.matches;
     };
-    const select = i => {
-      cur = i;
-      chips.forEach((chip, k) => {
-        chip.classList.toggle('is-on', k === i);
-        chip.setAttribute('aria-selected', String(k === i));
-        chip.tabIndex = k === i ? 0 : -1;
-      });
-      cmp.setAttribute('aria-labelledby', chips[i].id);
+    // FLIP: los fondos cambian de geometría; los textos conservan su tamaño.
+    // Los rectángulos se miden una vez por cambio, nunca en cada frame.
+    let morphAnimations = [], morphLayer = null, morphVersion = 0;
+    const morphEase = 'cubic-bezier(.76, 0, .24, 1)';
+    const readBox = (node, origin, extra = {}) => {
+      const rect = node.getBoundingClientRect(), style = getComputedStyle(node);
+      return { x: rect.left - origin.left, y: rect.top - origin.top, width: rect.width, height: rect.height,
+        color: style.backgroundColor, radius: style.borderRadius, ...extra };
     };
-    const writePersona = () => PERSONAS[cur].forEach((text, k) => { slots[k].textContent = text; });
-    const showAdapted = adapted => {
-      cmp.classList.toggle('is-adapted', adapted);
-      standard.setAttribute('aria-hidden', String(adapted));
-      alt.setAttribute('aria-hidden', String(!adapted));
+    const readBlocks = (view, origin) => {
+      const blocks = new Map();
+      blocks.set('shell', readBox($('.poly-tool', view), origin));
+      blocks.set('field', readBox($('.poly-tool__amount, .poly-api__endpoint', view), origin));
+      const result = $('.poly-tool__amount--result', view);
+      if (result) {
+        // Un resultado ancho se divide en dos piezas que luego se separan.
+        const box = readBox(result, origin);
+        blocks.set('left', { ...box, width: box.width / 2 });
+        blocks.set('right', { ...box, x: box.x + box.width / 2, width: box.width / 2 });
+      } else {
+        $$('.poly-tool__metric, .poly-api__editor', view).forEach((node, index) => {
+          blocks.set(index === 0 ? 'left' : 'right', readBox(node, origin));
+        });
+      }
+      blocks.set('action', readBox($('.poly-demo__cta', view), origin));
+      return blocks;
     };
-    const settle = () => {
-      clearTimers();
-      cmp.classList.add('is-instant');
-      writePersona(); showAdapted(true);
+    const finishMorph = () => {
+      morphVersion++;
+      morphAnimations.forEach(animation => animation.cancel());
+      morphAnimations = [];
+      morphLayer?.remove(); morphLayer = null;
+      cmp.classList.remove('is-morphing');
       cmp.setAttribute('aria-busy', 'false');
     };
-    const canPlay = () => playing && visible && !document.hidden && !motion.matches;
-    const run = (i, instant = false) => {
-      clearTimers(); select(i);
-      if (instant || motion.matches) { settle(); return; }
-      cmp.classList.remove('is-instant');
-      cmp.setAttribute('aria-busy', 'true');
-      showAdapted(false);
-      // La página estándar se lee un momento antes de transformarse.
-      later(writePersona, 420);
-      later(() => { showAdapted(true); cmp.setAttribute('aria-busy', 'false'); }, 1000);
-      later(() => { if (canPlay()) run((cur + 1) % PERSONAS.length); }, 6200);
+    const tween = (node, frames, options) => {
+      const animation = node.animate(frames, { fill: 'both', ...options });
+      morphAnimations.push(animation);
+      return animation;
     };
-    const pause = () => { playing = false; syncPlayback(); settle(); };
+    const morphTo = (next, previous, from, to, origin, oldOpacity) => {
+      const version = morphVersion;
+      morphLayer = document.createElement('div');
+      morphLayer.className = 'poly-morph';
+      morphLayer.setAttribute('aria-hidden', 'true');
+      morphLayer.inert = true;
+      // Texto saliente sin fondos ni IDs duplicados; desaparece antes del nuevo.
+      const copy = previous.cloneNode(true), rect = previous.getBoundingClientRect();
+      copy.removeAttribute('id');
+      $$('[id]', copy).forEach(node => node.removeAttribute('id'));
+      copy.className = 'poly-demo poly-morph__copy';
+      Object.assign(copy.style, { left: `${rect.left - origin.left}px`, top: `${rect.top - origin.top}px`, width: `${rect.width}px` });
+      morphLayer.append(copy);
+      tween(copy, [{ opacity: oldOpacity, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-4px)' }], { duration: 160, easing: 'cubic-bezier(.4, 0, 1, 1)' });
+      to.forEach((target, key) => {
+        const start = from.get(key), block = document.createElement('div');
+        block.className = 'poly-morph__block';
+        block.dataset.block = key; block.dataset.color = target.color;
+        Object.assign(block.style, { left: `${target.x}px`, top: `${target.y}px`, width: `${target.width}px`, height: `${target.height}px`, borderRadius: target.radius });
+        const before = document.createElement('div'), after = document.createElement('div');
+        before.style.background = start.color; after.style.background = target.color;
+        block.append(before, after); morphLayer.append(block);
+        const delay = key === 'left' ? 40 : key === 'right' ? 85 : 0;
+        const duration = key === 'shell' ? 760 : key === 'action' ? 680 : 700;
+        const transform = `translate(${start.x - target.x}px, ${start.y - target.y}px) scale(${start.width / target.width}, ${start.height / target.height})`;
+        tween(block, [{ transform }, { transform: 'translate(0, 0) scale(1, 1)' }], { duration, delay, easing: morphEase });
+        tween(before, [{ opacity: 1 }, { opacity: 0 }], { duration, delay, easing: morphEase });
+        tween(after, [{ opacity: 0 }, { opacity: 1 }], { duration, delay, easing: morphEase });
+      });
+      cmp.append(morphLayer);
+      cmp.classList.add('is-morphing');
+      cmp.setAttribute('aria-busy', 'true');
+      const textGroups = $$('.poly-demo__intro, .poly-tool__heading, .poly-tool__amount, .poly-tool__metric, .poly-tool__footnote, .poly-tool__total, .poly-api__endpoint, .poly-api__editor, .poly-demo__cta, .poly-demo__note', next);
+      textGroups.forEach((node, index) => {
+        tween(node, [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }], {
+          duration: 360, delay: 300 + Math.min(index, 6) * 28, easing: 'cubic-bezier(.22, 1, .36, 1)'
+        });
+      });
+      Promise.all(morphAnimations.map(animation => animation.finished.catch(() => {}))).then(() => {
+        if (version === morphVersion) finishMorph();
+      });
+    };
+    const select = (i, instant = false) => {
+      const previous = previews[cur], next = previews[i];
+      if (i === cur) { if (instant || motion.matches) finishMorph(); return; }
+      const animate = !instant && !motion.matches && typeof next.animate === 'function';
+      let from, to, origin, oldOpacity;
+      if (animate) {
+        origin = cmp.getBoundingClientRect();
+        from = readBlocks(previous, origin); to = readBlocks(next, origin);
+        oldOpacity = Number(getComputedStyle($('.poly-demo__intro', previous)).opacity);
+        // Si llega otro clic, retomar la forma visible, sin saltar al estado anterior.
+        if (morphLayer) $$('.poly-morph__block', morphLayer).forEach(node => {
+          from.set(node.dataset.block, readBox(node, origin, { color: node.dataset.color }));
+        });
+      }
+      finishMorph();
+      cur = i;
+      chips.forEach((chip, k) => {
+        const active = k === i;
+        chip.classList.toggle('is-on', active);
+        chip.setAttribute('aria-selected', String(active));
+        chip.tabIndex = active ? 0 : -1;
+        options[k].classList.toggle('is-on', active);
+        descriptions[k].hidden = !active;
+        previews[k].classList.toggle('is-on', active);
+        previews[k].setAttribute('aria-hidden', String(!active));
+        previews[k].inert = !active;
+      });
+      if (animate) morphTo(next, previous, from, to, origin, oldOpacity);
+    };
+    const schedule = () => {
+      stopTimer();
+      if (canPlay()) timer = setTimeout(() => { select((cur + 1) % chips.length); schedule(); }, 5500);
+    };
+    const pause = () => { playing = false; stopTimer(); syncPlayback(); };
     const choose = (i, instant) => {
-      playing = false; syncPlayback();
-      cmp.setAttribute('aria-live', 'polite');
-      run(i, instant);
+      pause(); cmp.setAttribute('aria-live', 'polite'); select(i, instant);
     };
     chips.forEach((chip, k) => {
       chip.addEventListener('click', e => choose(k, e.detail === 0));
       chip.addEventListener('keydown', e => {
-        const next = { ArrowLeft: (k + chips.length - 1) % chips.length, ArrowRight: (k + 1) % chips.length, Home: 0, End: chips.length - 1 }[e.key];
+        const next = { ArrowUp: (k + chips.length - 1) % chips.length, ArrowDown: (k + 1) % chips.length, Home: 0, End: chips.length - 1 }[e.key];
         if (next === undefined) return;
         e.preventDefault(); choose(next, true); chips[next].focus();
       });
       chip.addEventListener('focus', () => { if (playing) pause(); });
     });
+    // Una demo enfocada no se reemplaza mientras la persona la está usando.
+    cmp.addEventListener('focusin', pause);
     playback.addEventListener('click', () => {
       if (playing) { pause(); return; }
-      playing = true; syncPlayback(); cmp.setAttribute('aria-live', 'off');
-      if (canPlay()) run(cur);
+      playing = true; syncPlayback(); cmp.setAttribute('aria-live', 'off'); schedule();
     });
-    const syncVisibility = () => {
-      if (canPlay()) run(cur);
-      else settle();
-    };
     new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting && entry.intersectionRatio >= .25;
-      syncVisibility();
+      if (!visible) finishMorph();
+      schedule();
     }, { threshold: .25 }).observe(cmp);
-    document.addEventListener('visibilitychange', syncVisibility);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) finishMorph();
+      schedule();
+    });
+    addEventListener('resize', () => { finishMorph(); schedule(); });
     motion.addEventListener('change', () => {
-      if (motion.matches) playing = false;
-      syncPlayback(); settle();
+      if (motion.matches) pause();
+      syncPlayback(); select(cur, true);
+    });
+    // Acciones de muestra: no crean links de cobro ni envían pagos reales.
+    $('[data-demo-action="link"]', cmp).addEventListener('click', () => {
+      $('[data-link-status]', cmp).textContent = 'Sample link created: pay.example/demo';
+    });
+    let sampleSales = false;
+    $('[data-demo-action="sales"]', cmp).addEventListener('click', e => {
+      sampleSales = !sampleSales;
+      $('[data-store-sales]', cmp).textContent = sampleSales ? '$500,000' : '$1,250,000';
+      $('[data-store-fees]', cmp).textContent = sampleSales ? '$4,000' : '$10,000';
+      $('[data-store-net]', cmp).textContent = sampleSales ? '$496,000' : '$1,240,000';
+      $('#preview-store .poly-tool__currency', cmp).textContent = 'ARS';
+      e.currentTarget.textContent = sampleSales ? 'Try ARS 1,250,000' : 'Try ARS 500,000';
+    });
+    $('[data-demo-action="payment"]', cmp).addEventListener('click', () => {
+      $('[data-api-status]', cmp).textContent = '200 OK';
+      $('[data-api-hint]', cmp).textContent = 'Test payment approved. ARS 12,500 · Sandbox only.';
     });
     syncPlayback();
   }
@@ -279,8 +372,10 @@
   const demoLoop = $('.product__loop');
   const demoVideo = $('.product__video');
   const demoMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const demoMobile = matchMedia('(max-width: 767px), (max-width: 1023px) and (pointer: coarse)');
   let demoVisible = !('IntersectionObserver' in window);
   let wantsPlayback = !demoMotion.matches;
+  let demoResumeTime = null;
 
   function syncDemo() {
     if (demoVisible && wantsPlayback) demoVideo.play().catch(() => {});
@@ -296,6 +391,11 @@
   }
   demoVideo.addEventListener('play', updateDemoState);
   demoVideo.addEventListener('pause', updateDemoState);
+  demoVideo.addEventListener('loadedmetadata', () => {
+    if (demoResumeTime === null || demoVideo.currentSrc !== demoVideo.src) return;
+    demoVideo.currentTime = demoResumeTime;
+    demoResumeTime = null;
+  });
 
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(([entry]) => {
@@ -311,6 +411,22 @@
   });
 
   let current = -1;
+  function setDemoSource(tab, keepTime = false) {
+    const name = (demoMobile.matches && tab.dataset.demoMobile) || tab.dataset.demo;
+    const src = `assets/demos/${name}.mp4?v=7`;
+    if (demoVideo.getAttribute('src') === src) return false;
+
+    const time = keepTime ? (demoResumeTime ?? demoVideo.currentTime) : 0;
+    demoVideo.pause();
+    demoResumeTime = time > 0 ? time : null;
+    demoVideo.poster = `assets/demos/${name}.jpg?v=6`;
+    demoVideo.src = src;
+    return true;
+  }
+  demoMobile.addEventListener('change', () => {
+    if (current >= 0 && setDemoSource(ptabs[current], true)) syncDemo();
+  });
+
   function setStep(n) {
     if (n === current) return;
     current = n;
@@ -323,15 +439,9 @@
       t.tabIndex = i === n ? 0 : -1;
     });
     const tab = ptabs[n];
-    const src = `assets/demos/${tab.dataset.demo}.mp4?v=7`;
     demoStage.setAttribute('aria-labelledby', tab.id);
     demoLoop.setAttribute('aria-label', `Play or pause. ${tab.dataset.description}`);
-    if (demoVideo.getAttribute('src') !== src) {
-      demoVideo.pause();
-      demoVideo.poster = `assets/demos/${tab.dataset.demo}.jpg?v=6`;
-      demoVideo.src = src;
-      wantsPlayback = !demoMotion.matches;
-    }
+    if (setDemoSource(tab)) wantsPlayback = !demoMotion.matches;
     syncDemo();
   }
   function productProgress() {

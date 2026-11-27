@@ -9,8 +9,8 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Mako&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles-b.css?v=23" />
+  <link href="https://fonts.googleapis.com/css2?family=Mako&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Geist:wght@400&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles-b.css?v=31" />
   <script>
     /* unidad de escala: 1u = 1px del diseño 1440. Desktop crece con el ancho (siempre ocupa todo el ancho).
        Debajo de 1024 el layout compacto usa px reales (u = 1px). */
@@ -121,7 +121,7 @@
           <i class="ptab__dot"></i>
         </button>
         <button class="ptab ptab--sky" type="button" role="tab" id="demo-audience" aria-selected="false" aria-controls="product-demo" tabindex="-1" data-step="1"
-          data-demo="audiencias" data-description="Audience demo: switch from Everyone to Builder and Buyer to see different headlines.">
+          data-demo="audiencias-universidad" data-demo-mobile="audiencias-universidad-1080p" data-description="Audience demo: switch from Everyone to Current student and Employer to see Horizon University change its image, text, and call to action.">
           <span class="ptab__num">02</span>
           <span class="ptab__txt">One Site. <br />Different Audiences.</span>
           <i class="ptab__dot"></i>
@@ -169,34 +169,34 @@
       <p class="feats__lead label-supreme">Everything you need to edit, tailor and publish your site, in one place.</p>
     </div>
     <div class="feats__grid">
-      <article class="feat feat--lime" style="--d:0">
+      <article class="feat feat--lime feat--icon" style="--d:0">
         <div class="feat__head"><span class="feat__num">01</span><h3 class="feat__title">Assistant</h3></div>
-        <i class="feat__dot"></i>
+        <span class="feat__icon feat__icon--assistant" aria-hidden="true"></span>
         <p class="feat__body">Get help writing, editing and organizing content, right where you work.</p>
       </article>
-      <article class="feat feat--sky" style="--d:1">
+      <article class="feat feat--sky feat--icon" style="--d:1">
         <div class="feat__head"><span class="feat__num">02</span><h3 class="feat__title">Simulate</h3></div>
-        <i class="feat__dot"></i>
+        <span class="feat__icon feat__icon--simulate" aria-hidden="true"></span>
         <p class="feat__body">Preview your site as each audience will see it, before anything goes live.</p>
       </article>
-      <article class="feat feat--dark" style="--d:2">
+      <article class="feat feat--dark feat--icon" style="--d:2">
         <div class="feat__head"><span class="feat__num">03</span><h3 class="feat__title">Collections</h3></div>
-        <i class="feat__dot"></i>
+        <span class="feat__icon feat__icon--collections" aria-hidden="true"></span>
         <p class="feat__body">Shape your own content types: jobs, stories, events, people. Edit them once, use them everywhere.</p>
       </article>
-      <article class="feat feat--lime" style="--d:3">
+      <article class="feat feat--lime feat--icon" style="--d:3">
         <div class="feat__head"><span class="feat__num">04</span><h3 class="feat__title">Forms</h3></div>
-        <i class="feat__dot"></i>
+        <span class="feat__icon feat__icon--forms" aria-hidden="true"></span>
         <p class="feat__body">Add forms to any page and keep every response in one place.</p>
       </article>
-      <article class="feat feat--sky" style="--d:4">
+      <article class="feat feat--sky feat--icon" style="--d:4">
         <div class="feat__head"><span class="feat__num">05</span><h3 class="feat__title">Analytics</h3></div>
-        <i class="feat__dot"></i>
+        <span class="feat__icon feat__icon--analytics" aria-hidden="true"></span>
         <p class="feat__body">See how each page and audience performs, and what to improve next.</p>
       </article>
-      <article class="feat feat--dark" style="--d:5">
+      <article class="feat feat--dark feat--icon" style="--d:5">
         <div class="feat__head"><span class="feat__num">06</span><h3 class="feat__title">User profiles</h3></div>
-        <i class="feat__dot"></i>
+        <span class="feat__icon feat__icon--profiles" aria-hidden="true"></span>
         <p class="feat__body">Understand who is visiting and give each profile content that fits.</p>
       </article>
     </div>
@@ -211,29 +211,81 @@
         <p class="live__lead">Metalens is built on Polymorphic Design, a framework for adaptive experiences. Your team sets the rules. The site adapts to each person who visits.</p>
       </div>
       <article class="live__panel" data-cmp>
-        <header class="live__head">
-          <h3 class="live__name">One site, shaped for each person</h3>
-          <button class="live__playback" type="button" aria-label="Pause demo animation" aria-controls="visitor-preview" data-playing="true" hidden><span class="live__playback-icon" aria-hidden="true"></span><span class="live__playback-label">Pause</span></button>
-          <p class="live__description">Your team designs the standard page and decides what can change. Choose a visitor to see how the page adapts.</p>
-        </header>
-        <div class="aud__chips" role="tablist" aria-label="Visitor">
-          <button class="aud__chip is-on" id="visitor-candidate" role="tab" aria-selected="true" aria-controls="visitor-preview" tabindex="0" data-i="0">Candidate</button>
-          <button class="aud__chip" id="visitor-customer" role="tab" aria-selected="false" aria-controls="visitor-preview" tabindex="-1" data-i="1">Customer</button>
-          <button class="aud__chip" id="visitor-partner" role="tab" aria-selected="false" aria-controls="visitor-preview" tabindex="-1" data-i="2">Partner</button>
+        <div class="aud__chips" role="tablist" aria-label="Visitor" aria-orientation="vertical">
+          <div class="aud__option is-on" role="presentation">
+            <button class="aud__chip is-on" id="visitor-freelance" type="button" role="tab" aria-selected="true" aria-controls="preview-freelance" aria-describedby="description-freelance" tabindex="0">Freelance</button>
+            <p class="aud__description" id="description-freelance">Send a payment link. See what lands in your local currency.</p>
+          </div>
+          <div class="aud__option" role="presentation">
+            <button class="aud__chip" id="visitor-store" type="button" role="tab" aria-selected="false" aria-controls="preview-store" aria-describedby="description-store" tabindex="-1">Store owner</button>
+            <p class="aud__description" id="description-store" hidden>Accept QR payments. Know your fees and when you’ll get paid.</p>
+          </div>
+          <div class="aud__option" role="presentation">
+            <button class="aud__chip" id="visitor-developer" type="button" role="tab" aria-selected="false" aria-controls="preview-developer" aria-describedby="description-developer" tabindex="-1">Platform developer</button>
+            <p class="aud__description" id="description-developer" hidden>Explore the API. Test a payment before you start building.</p>
+          </div>
         </div>
-        <div class="cmp is-adapted" id="visitor-preview" role="tabpanel" aria-labelledby="visitor-candidate" aria-live="off">
-          <div class="cmp__page cmp__page--std" aria-hidden="true">
-            <p class="cmp__tag">Standard</p>
-            <p class="cmp__title">Make every<br />visit count</p>
-            <p class="cmp__copy">A website that speaks to whoever arrives.</p>
-            <span class="cmp__cta">Explore</span>
+        <div class="live__stage">
+          <div class="cmp" id="visitor-preview" aria-live="off">
+            <div class="poly-demo is-on" id="preview-freelance" role="tabpanel" aria-labelledby="visitor-freelance" aria-hidden="false" tabindex="0">
+              <div class="poly-demo__intro">
+                <h3 class="poly-demo__title">Get paid<br />from anywhere.</h3>
+                <p class="poly-demo__lead">Send a payment link and see how much<br class="poly-demo__break" /> you’ll receive in your local currency.</p>
+              </div>
+              <div class="poly-tool">
+                <div class="poly-tool__heading"><h4>QR payment calculator</h4><p>Estimate what it costs to accept QR payments.</p></div>
+                <div class="poly-tool__fields">
+                  <div class="poly-tool__amount"><div><p class="poly-tool__label">Estimated monthly sales</p><p class="poly-tool__value">$1,250,000</p></div><span class="poly-tool__currency">USD</span></div>
+                  <div class="poly-tool__amount poly-tool__amount--result"><div><p class="poly-tool__label">Estimated monthly sales</p><p class="poly-tool__value">$612,500.00</p></div><span class="poly-tool__currency">USD</span></div>
+                </div>
+                <p class="poly-tool__footnote">1 USD = 1,250.00 ARS · Includes a 2% fee</p>
+              </div>
+              <div class="poly-demo__action">
+                <button class="poly-demo__cta" type="button" data-demo-action="link">Create payment link</button>
+                <p class="poly-demo__note" data-link-status role="status">Sample exchange rate and payment link.</p>
+              </div>
+            </div>
+            <div class="poly-demo" id="preview-store" role="tabpanel" aria-labelledby="visitor-store" aria-hidden="true" tabindex="0" inert>
+              <div class="poly-demo__intro">
+                <h3 class="poly-demo__title">Get paid with<br />QR in your store.</h3>
+                <p class="poly-demo__lead">See your fees and payout timing<br class="poly-demo__break" /> based on your monthly sales.</p>
+              </div>
+              <div class="poly-tool">
+                <div class="poly-tool__heading"><h4>QR payment calculator</h4><p>Estimate what it costs to accept QR payments.</p></div>
+                <div class="poly-tool__fields" aria-live="polite">
+                  <div class="poly-tool__amount"><div><p class="poly-tool__label">Estimated monthly sales</p><p class="poly-tool__value" data-store-sales>$1,250,000</p></div><span class="poly-tool__currency">USD</span></div>
+                  <div class="poly-tool__results">
+                    <div class="poly-tool__metric"><p>Monthly fees</p><p class="poly-tool__value" data-store-fees>$10,000</p><small>0.80% per payment</small></div>
+                    <div class="poly-tool__metric"><p>Payout timing</p><p class="poly-tool__value">Same day</p><small>To your Cauce account</small></div>
+                  </div>
+                </div>
+                <div class="poly-tool__total" aria-live="polite"><span>Monthly net payout</span><strong data-store-net>$1,240,000</strong></div>
+              </div>
+              <div class="poly-demo__action"><button class="poly-demo__cta" type="button" data-demo-action="sales">Try ARS 500,000</button></div>
+            </div>
+            <div class="poly-demo" id="preview-developer" role="tabpanel" aria-labelledby="visitor-developer" aria-hidden="true" tabindex="0" inert>
+              <div class="poly-demo__intro">
+                <h3 class="poly-demo__title">Add payments<br />to your product</h3>
+                <p class="poly-demo__lead">Test a payment in the sandbox and see the API response before you integrate.</p>
+              </div>
+              <div class="poly-tool poly-tool--developer">
+                <div class="poly-tool__heading"><h4>Payments playground</h4><p>Try a request to the payments API.</p></div>
+                <div class="poly-api">
+                  <div class="poly-api__endpoint"><p><strong>POST</strong> /v1/payments</p><span class="poly-api__badge">Sandbox</span></div>
+                  <div class="poly-api__editors">
+                    <div class="poly-api__editor"><p class="poly-api__label">Request</p><pre>{
+  <span class="poly-api__key">"amount"</span><span class="poly-api__punct">: </span><span class="poly-api__value">12500</span><span class="poly-api__punct">,</span>
+  <span class="poly-api__key">"currency"</span><span class="poly-api__punct">: </span><span class="poly-api__value">"ARS"</span><span class="poly-api__punct">,</span>
+  <span class="poly-api__key">"method"</span><span class="poly-api__punct">: </span><span class="poly-api__value">"card"</span>
+}</pre></div>
+                    <div class="poly-api__editor"><p class="poly-api__label">Response</p><div class="poly-api__response" role="status"><p data-api-status>Waiting for request</p><p class="poly-api__hint" data-api-hint>Run a test payment to see the response.</p></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="poly-demo__action"><button class="poly-demo__cta" type="button" data-demo-action="payment">Run a test payment</button></div>
+            </div>
           </div>
-          <div class="cmp__page cmp__page--alt" aria-hidden="false">
-            <p class="cmp__tag"><span class="sw"><span style="--i:0">Came from a job post</span></span></p>
-            <p class="cmp__title"><span class="sw"><span style="--i:1">Find your</span></span><span class="sw"><span style="--i:2">next team</span></span></p>
-            <p class="cmp__copy"><span class="sw"><span style="--i:3">Open roles, real stories and how we work.</span></span></p>
-            <span class="cmp__cta"><span class="sw"><span style="--i:4">See open roles</span></span></span>
-          </div>
+          <button class="live__playback" type="button" aria-label="Play demo animation" aria-controls="visitor-preview" data-playing="false" hidden><span class="live__playback-icon" aria-hidden="true"></span><span class="live__playback-label">Play</span></button>
         </div>
       </article>
     </div>
@@ -370,6 +422,6 @@
   </footer>
 
 
-  <script src="animations-b.js?v=22"></script>
+  <script src="animations-b.js?v=28"></script>
 </body>
 </html>
